@@ -264,6 +264,113 @@ def visitor_unmute_own_in_call_microphone(visitor_browser):
     print("Switching back to Visitor DEFAULT CONTENT")       
     visitor_browser.switch_to_default_content()
 
+
+
+def visitor_mute_own_in_call_camera(visitor_browser):
+    print("Switching to Visitor IFRAME")
+    visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+    print("Checking that the Visitor CAMERA EXISTS and NOT MUTED")
+    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]"):
+        try:
+            print("Trying to MUTE the Visitor CAMERA")
+            WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]"))).click()
+            
+        except:
+            print("Exception: UNMUTED Visitor CAMERA NOT FOUND")
+            print("Trying one more time....")
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]"))).click()
+    else:
+        if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-mic-off red-icon')]"):
+            print("Visitor CAMERA is already MUTED")
+        else:
+            print("Visitor CAMERA control NOT FOUND")
+    print("Checking that the CAMERA has been really MUTED...")
+    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-off red-icon')]"):
+        print("Visitor CAMERA is MUTED")
+    else:
+        print("Visitor CAMERA is NOT MUTED")
+        print("Trying to find the MUTED Visitor CAMERA for one more time...") 
+        try:
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-off red-icon')]")))
+        except:
+            print("Visitor CAMERA control NOT FOUND in MUTED state after 2 search attempts")
+    print("Switching back to Visitor DEFAULT CONTENT")       
+    visitor_browser.switch_to_default_content()
+
+
+def visitor_unmute_own_in_call_camera(visitor_browser):
+    print("Switching to Visitor IFRAME")
+    visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+    print("Checking that the Visitor CAMERA EXISTS and  MUTED")
+    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-off red-icon')]"):
+        try:
+            print("Trying to UN-MUTE the Visitor CAMERA")
+            WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-off red-icon')]"))).click()
+            
+        except:
+            print("Exception: MUTED Visitor CAMERA NOT FOUND")
+            print("Trying one more time....")
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-off red-icon')]"))).click()
+    else:
+        if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]"):
+            print("Visitor CAMERA is already UN-MUTED")
+        else:
+            print("Visitor CAMERA control NOT FOUND")
+    # Checking that MIC has changed its state to UN-MUTED
+    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]"):
+        print("Visitor CAMERA is UNMUTED")
+    else:
+        print("Visitor CAMERA is STILL MUTED")
+        print("Trying to find the UNMUTED Visitor CAMERA for one more time...") 
+        try:
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]")))
+        except:
+            print("Visitor CAMERA control NOT FOUND in UN-MUTED state after 2 search attempts")
+    print("Switching back to Visitor DEFAULT CONTENT")       
+    visitor_browser.switch_to_default_content()
+
+
+def visitor_end_call(visitor_browser):
+    print("Switching to Visitor IFRAME")
+    visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+    print("Checking that the Visitor END CALL button EXISTS")
+    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]"):
+        try:
+            print("Trying to END the call from Visitor side")
+            WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]"))).click()
+            
+        except:
+            print("Exception: END CALL button for Visitor NOT FOUND")
+            print("Trying one more time....")
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]"))).click()
+    else:
+        print("Visitor END CALL button not found")
+        
+    # Checking that Visitor screen shows 'The video session has ended'
+    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='post-call']/div[contains(@id,'post-call-content')]/h3/span[contains(text(),'The video session has ended')]"):
+        print("Visitor call has been ENDED with 'The video session has ended'")
+    else:
+        print("Visitor 'The video session has ended' NOT FOUND")
+        print("Trying to find the Visitor 'The video session has ended' for one more time...") 
+        try:
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='post-call']/div[contains(@id,'post-call-content')]/h3/span[contains(text(),'The video session has ended')]")))
+        except:
+            print("Visitor 'The video session has ended' NOT FOUND after 2 search attempts")
+
+    # Checking that Visitor screen shows 'REJOIN' button
+    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]"):
+        print("Visitor call has been ENDED and REJOIN button displayed")
+    else:
+        print("Visitor REJOIN button NOT FOUND")
+        print("Trying to find the Visitor REJOIN button for one more time...") 
+        try:
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]")))
+        except:
+            print("Visitor REJOIN button NOT FOUND after 2 search attempts")
+    print("Switching back to Visitor DEFAULT CONTENT")       
+    visitor_browser.switch_to_default_content()
+
+
 # Page Object ==========================================================================================================
 # <div id="VyIRojPtYS2w_renderer_vidyoRemoteName0" class="guest">demoUser_97567</div> # Counterparty name on the screen
 # <button id="joinLeaveButton" class="toolbarButton callStart" title="Join Conference"/> # Join Button 
@@ -396,6 +503,7 @@ while counter == 1:
         time.sleep(5)
 
         visitor_mute_own_in_call_microphone(visitor_browser)
+        visitor_mute_own_in_call_camera(visitor_browser)
 
         # Mute the camera on Agent side
         """
@@ -413,6 +521,7 @@ while counter == 1:
         agent_unmute_own_in_call_microphone(agent_browser)
 
         visitor_unmute_own_in_call_microphone(visitor_browser)
+        visitor_unmute_own_in_call_camera(visitor_browser)
 
         """
         # Un-mute the camera on Agent side
@@ -432,12 +541,16 @@ while counter == 1:
         print("Agent MICROPHONE un-muted")
         time.sleep(1)
         """
+        
+        # End the call at the Visitor side
+        visitor_end_call(visitor_browser)
+        print("Clicked on Visitor END CALL button")
 
-
-
+        """
         # End the call at the Agent side
         agent_browser.execute_script("$('.iframeElement').contents().find('#call-btn').click()")
         print("Clicked on Agent END CALL button")
+        """
         time.sleep(5)
         #WebDriverWait(agent_browser, 10).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
 
