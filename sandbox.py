@@ -99,42 +99,77 @@ def agent_close_existing_conversations(agent_browser):
         print("Conversation control drop-down not found")
 
 
+def agent_send_invite_message(agent_browser):
+    print("Searching the SEND MESSAGE button")
+    if check_exists_by_xpath(agent_browser, 10, "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"):
+        print("SEND MESSAGE button FOUND")
+        print("Trying to click the SEND MESSAGE button...")
+        try:
+            WebDriverWait(agent_browser, 5).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"))).click()
+        except:
+            print("Exception: Agent SEND MESSAGE button NOT FOUND")
+            print("Trying click Agent SEND MESSAGE button for one more time, by PRESENSE of the ELEMENT....")
+            WebDriverWait(agent_browser, 5).until(EC.presence_of_element_located((By.XPATH, "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"))).click()
+            #agent_browser.execute_script("$('.iframeElement').contents().find('#invite-btn').click()")
+            #agent_browser.execute_script("$('.iframeElement').contents().find('#invite-btn').click()")
+            #agent_browser.execute_script("$find('.lpview_send_msg_button chat_input_button').click();")
+            agent_browser.execute_script("$('.lpview_send_msg_button chat_input_button').trigger('click';")
+    else:
+        print("SEND MESSAGE button NOT FOUND")
+
+
+
 def agent_invite_visitor(agent_browser):
-    print("Searching for 'Connecting to visitor' string")
-    WebDriverWait(agent_browser, 10).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
-    if check_exists_by_xpath(agent_browser, 10, "//div[@id='pre-call']//h1[contains(text(),'Connecting')]"):
-        print("'Connecting to visitor' FOUND")
-    else:
-        print("'Connecting to visitor' NOT FOUND")
-    agent_browser.switch_to.default_content()
-    WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH, "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
-        
-    print("Searching for 'Detecting video capability' string")
-    WebDriverWait(agent_browser, 10).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
-    if check_exists_by_xpath(agent_browser, 10, "//div[@id='pre-call']//h1[contains(text(),'Detecting')]"):
-        print("'Detecting video capability' FOUND")
-    else:
-        print("'Detecting video capability' NOT FOUND")
-    agent_browser.switch_to.default_content()
-    WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH, "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
+    print("Verifying that the Agent IFRAME exists...")
+    if check_exists_by_xpath(agent_browser, 2, "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]"):
+        print("Agent IFRAME FOUND")
+        print("Switching the Agent to IFRAME...")
+        WebDriverWait(agent_browser, 10).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH,
+                                                                                          "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
+        print("Searching for 'Connecting to visitor' string")
+        if check_exists_by_xpath(agent_browser, 2, "//div[@id='pre-call']//h1[contains(text(),'Connecting')]"):
+            print("'Connecting to visitor' FOUND")
+        else:
+            print("'Connecting to visitor' NOT FOUND")
+        agent_browser.switch_to.default_content()
+        WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH,
+                                                                              "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
 
-    print("Searching for 'Click invite to initialize a video call' string")
-    WebDriverWait(agent_browser, 10).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
-    if check_exists_by_xpath(agent_browser, 30, "//div[@id='pre-call']//h1[contains(text(),'Click invite to initialize a video call')]"):
-        print("'Click invite to initialize a video call' FOUND")
-    else:
-        print("'Click invite to initialize a video call' NOT FOUND")
-    agent_browser.switch_to.default_content()
-    WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH, "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
+        print("Searching for 'Detecting video capability' string")
+        WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH,
+                                                                                         "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
+        if check_exists_by_xpath(agent_browser, 2, "//div[@id='pre-call']//h1[contains(text(),'Detecting')]"):
+            print("'Detecting video capability' FOUND")
+        else:
+            print("'Detecting video capability' NOT FOUND")
+        agent_browser.switch_to.default_content()
+        WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH,
+                                                                              "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
 
-    agent_browser.execute_script("$('.iframeElement').contents().find('#invite-btn').click()")
+        print("Searching for 'Click invite to initialize a video call' string")
+        WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH,
+                                                                                         "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
+        if check_exists_by_xpath(agent_browser, 2,
+                                 "//div[@id='pre-call']//h1[contains(text(),'Click invite to initialize a video call')]"):
+            print("'Click invite to initialize a video call' FOUND")
+        else:
+            print("'Click invite to initialize a video call' NOT FOUND")
+        agent_browser.switch_to.default_content()
+        WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH,
+                                                                              "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
+
+        agent_browser.execute_script("$('.iframeElement').contents().find('#invite-btn').click()")
+    else:
+        print("Agent IFRAME NOT FOUND")
+        raise NoSuchElementException
+
     # Unable to establish connection. Please check your network. [CRLF] Refresh this widget to attempt to continue.
 
 
 
 def agent_open_LPVE_widget(agent_browser):
     #agent_browser.switch_to.default_content()
-    print("Checking existense LPVE widges button")
+    print("Checking existense LPVE widget button")
     #agent_browser.execute_script("$('.iframeElement').contents().find('#call-btn').click()")
     
     #WebDriverWait(agent_browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='LP_MainWidgetsManagerViewController_1']//div[contains(@class,'custom_widget_icon')]")))
@@ -195,6 +230,58 @@ def agent_unmute_own_in_call_microphone(agent_browser):
     agent_browser.execute_script("$('.iframeElement').contents().find('#mic-btn').click()")
     print("Agent MICROPHONE muted")
     time.sleep(1)
+
+def agent_reinvite_call(agent_browser):
+    
+    #print("Switching to Agent IFRAME")
+    #agent_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]"))))
+    """
+    print("Checking that the Agent 'The video session has ended' is PRESENT")
+    if check_exists_by_xpath(agent_browser, 5, "//div[@id='post-call']//h3[contains(text(),'The video session has ended')]"):
+        print("Agent 'The video session has ended' is PRESENT")
+        print("Checking that the Agent 'Please click Invite to re-start the session' is PRESENT")
+        if check_exists_by_xpath(agent_browser, 5, "//div[@id='post-call']//h3/p[contains(text(),'Please click Invite to re-start the session')]"):
+            print("Agent 'Please click Invite to re-start the session' is PRESENT")
+            print("Checking that the Agent 'RE-INVITE' button is PRESENT")
+            if check_exists_by_xpath(agent_browser, 5, "//div[@id='post-call']//button[contains(@id,'resend-invite-btn')]"):
+                try:
+                    print("Trying to click Agent 'RE-INVITE' button")
+                    WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='post-call']//button[contains(@id,'resend-invite-btn')]"))).click()
+                except:
+                    print("Exception: Agent 'RE-INVITE' button NOT FOUND")
+                    print("Trying click Agent 'RE-INVITE' button for one more time....")
+                    WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='post-call']//button[contains(@id,'resend-invite-btn')]"))).click()
+        else:
+            print("Agent 'Please click Invite to re-start the session' is NOT FOUND")
+    else:
+        print("Agent 'The video session has ended' is NOT FOUND")
+    """
+    
+    print("Switching the Agent to DEFAUL CONTENT")
+    agent_browser.switch_to.default_content()
+    agent_browser.execute_script("$('.iframeElement').contents().find('#resend-invite-btn').click()")
+    agent_browser.switch_to.default_content()
+    print("Agent: Sending the INVITE MESSAGE")
+    agent_send_invite_message(agent_browser)
+    print("Switching to Agent IFRAME")
+    agent_browser.switch_to_frame(WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]"))))
+    print("Checking that the Agent END CALL button is PRESENT")
+
+    if check_exists_by_xpath(agent_browser, 5, "//button[@id='call-btn']"):
+        print("Agent END CALL button found")
+    else:
+        print("Agent END CALL button NOT FOUND")
+        print("Trying to find the END CALL button for one more time...") 
+        try:
+            agent_browser.switch_to.default_content()
+            agent_browser.switch_to_frame(WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]"))))
+            WebDriverWait(agent_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//button[@id='call-btn']")))
+        except:
+            print("Agent END CALL button NOT FOUND after RE-INVITE after 2 search attempts")
+    print("Switching back to Agent DEFAULT CONTENT")       
+    agent_browser.switch_to_default_content()
+
+
 
 
 def visitor_open_chat(visitor_browser):
@@ -371,6 +458,35 @@ def visitor_end_call(visitor_browser):
     visitor_browser.switch_to_default_content()
 
 
+
+def visitor_rejoin_call(visitor_browser):
+    print("Switching to Visitor IFRAME")
+    visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+    print("Checking that the Visitor REJOIN button is PRESENT")
+    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]"):
+        try:
+            print("Trying to click Visitor REJOIN button")
+            WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]"))).click()
+            
+        except:
+            print("Exception: Visitor REJOIN button NOT FOUND")
+            print("Trying click Visitor REJOIN button for one more time....")
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]"))).click()
+    else:
+        print("Visitor REJOIN button NOT FOUND")
+    # Checking that Visitor REJOINED the call (END CALL button present)
+    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]"):
+        print("Visitor Re-Joined the call")
+    else:
+        print("Visitor could not REJOIN the call, END CALL button NOT FOUND")
+        print("Trying to find the END CALL button for one more time...") 
+        try:
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]")))
+        except:
+            print("Visitor END CALL button NOT FOUND after REJOIN after 2 search attempts")
+    print("Switching back to Visitor DEFAULT CONTENT")       
+    visitor_browser.switch_to_default_content()
+
 # Page Object ==========================================================================================================
 # <div id="VyIRojPtYS2w_renderer_vidyoRemoteName0" class="guest">demoUser_97567</div> # Counterparty name on the screen
 # <button id="joinLeaveButton" class="toolbarButton callStart" title="Join Conference"/> # Join Button 
@@ -406,6 +522,8 @@ while counter == 1:
         options.add_argument("--disable-notifications")
         options.add_argument("--disable-web-security")
         options.add_argument("--use-fake-ui-for-media-stream")
+        options.add_argument("--mute-audio")
+        
         
         #print(options.to_capabilities()) --disable-web-security
         #agent_browser = webdriver.Remote(command_executor='http://127.0.0.1:4444/wd/hub', desired_capabilities=DesiredCapabilities.CHROME)
@@ -544,15 +662,26 @@ while counter == 1:
         
         # End the call at the Visitor side
         visitor_end_call(visitor_browser)
-        print("Clicked on Visitor END CALL button")
+        #print("Clicked on Visitor END CALL button")
 
-        """
+        # ReJoin the call at the Visitor side
+        visitor_rejoin_call(visitor_browser)
+
+        
         # End the call at the Agent side
         agent_browser.execute_script("$('.iframeElement').contents().find('#call-btn').click()")
         print("Clicked on Agent END CALL button")
-        """
+        
+        time.sleep(5)
+        print("Agent: RE-INVITING...")
+        agent_reinvite_call(agent_browser)
         time.sleep(5)
         #WebDriverWait(agent_browser, 10).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
+
+        #<button id="refresh-btn" class="btn btn-success btn-lg">Refresh</button>
+
+        # <div id="ended"><div class="vertical-center"><h1>This chat has ended.</h1></div><a class="btn btn-large btn-success has-spinner " title="Download zip" id="pre-logs-button"><span class="spinner"><div class="icon-spin"></div></span><!-- react-text: 39 -->Diagnostic reports<!-- /react-text --></a></div>
+
 
 
 
