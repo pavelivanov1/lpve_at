@@ -13,10 +13,10 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import NoSuchElementException  
-from selenium.common.exceptions import ElementNotVisibleException  
-from selenium.common.exceptions import TimeoutException  
-from selenium.common.exceptions import StaleElementReferenceException  
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import ElementNotVisibleException
+from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException
 
 from selenium.webdriver.common.keys import Keys
 import time
@@ -26,9 +26,9 @@ from io import StringIO
 
 def check_exists_by_xpath(webdriver, timeout, xpath):
     try:
-        #webdriver.find_element_by_xpath(xpath)
-        #WebDriverWait(webdriver, 5).until(EC.visibility_of_element_located((By.XPATH, xpath))) presence_of_element_located
-        WebDriverWait(webdriver, timeout).until(EC.presence_of_element_located((By.XPATH, xpath))) 
+        # webdriver.find_element_by_xpath(xpath)
+        # WebDriverWait(webdriver, 5).until(EC.visibility_of_element_located((By.XPATH, xpath))) presence_of_element_located
+        WebDriverWait(webdriver, timeout).until(EC.presence_of_element_located((By.XPATH, xpath)))
     except ElementNotVisibleException:
         print("Element NOT VISIBLE: " + str(xpath))
         return False
@@ -39,13 +39,14 @@ def check_exists_by_xpath(webdriver, timeout, xpath):
         print("Element PRESENCE check TIMEOUT: " + str(ex))
         return False
     except:
-        print("Unknown exception in EXISTENCE check: " + str(ex))
+        print("Unknown exception in EXISTENCE check: ")
         return False
     return True
 
+
 # finally:
 #    print("Unknown Exception wheen trying to fing the: " + str(xpath))
-#print("Element NOT VISIBLE: " + str(xpath))
+# print("Element NOT VISIBLE: " + str(xpath))
 def check_visibility_by_xpath(webdriver, xpath):
     try:
         WebDriverWait(webdriver, 30).until(EC.visibility_of_element_located((By.XPATH, xpath)))
@@ -56,13 +57,12 @@ def check_visibility_by_xpath(webdriver, xpath):
         print("Element VISIBILITY check TIMEOUT: " + str(ex))
         return False
     except:
-        print("Unknown exception in VISIBILITY check: " + str(ex))
+        print("Unknown exception in VISIBILITY check: ")
         return False
     return True
-    
-    
-def agent_site_login(agent_browser, username, userpass, account_number):
 
+
+def agent_site_login(agent_browser, username, userpass, account_number):
     welcome_label = agent_browser.find_element(By.ID, 'welcomeLabel')
     welcome_label = agent_browser.find_element(By.XPATH, "//div[@id='welcomeLabel']")
     site_number = agent_browser.find_element(By.ID, 'siteNumber')
@@ -76,24 +76,28 @@ def agent_site_login(agent_browser, username, userpass, account_number):
     submit_button.click()
 
 
-
 def agent_close_existing_conversations(agent_browser):
-    
-    while check_exists_by_xpath(agent_browser, "//div[contains(@class,'lpview_dropdown_menu_container lpview_dropdown_menu_button actions_menu')]"):
-        agent_engagement_dropdown_menu = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class,'lpview_dropdown_menu_container lpview_dropdown_menu_button actions_menu')]")))
+    while check_exists_by_xpath(agent_browser,
+                                "//div[contains(@class,'lpview_dropdown_menu_container lpview_dropdown_menu_button actions_menu')]"):
+        agent_engagement_dropdown_menu = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                                            "//div[contains(@class,'lpview_dropdown_menu_container lpview_dropdown_menu_button actions_menu')]")))
         agent_engagement_dropdown_menu.click()
         if check_exists_by_xpath(agent_browser, "//div[contains(text(),'End engagement')]"):
-            agent_dropdown_menu_end_engagement = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(text(),'End engagement')]")))
+            agent_dropdown_menu_end_engagement = WebDriverWait(agent_browser, 30).until(
+                EC.element_to_be_clickable((By.XPATH, "//div[contains(text(),'End engagement')]")))
             agent_dropdown_menu_end_engagement.click()
-            #agent_dropdown_menu_end_engagement_confirm_button = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class(),'lpview_okButton button dark_bg grey operative')]")))
-            #agent_dropdown_menu_end_engagement_confirm_button = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class(),'lpview_okButton')]")))
+            # agent_dropdown_menu_end_engagement_confirm_button = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class(),'lpview_okButton button dark_bg grey operative')]")))
+            # agent_dropdown_menu_end_engagement_confirm_button = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class(),'lpview_okButton')]")))
             if not check_exists_by_xpath(agent_browser, "//*[@id='LP_undefined_2']/div/div[2]/div[3]/div[2]/span"):
                 print("End Engagement OK button not found")
-            agent_dropdown_menu_end_engagement_confirm_button = WebDriverWait(agent_browser, 30).until(EC.presence_of_element_located((By.XPATH, "//*[@id='LP_undefined_2']/div/div[2]/div[3]/div[2]/span")))
-            #agent_dropdown_menu_end_engagement_confirm_button = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//span[contains(text(),'End engagement')]")))
+            agent_dropdown_menu_end_engagement_confirm_button = WebDriverWait(agent_browser, 30).until(
+                EC.presence_of_element_located((By.XPATH, "//*[@id='LP_undefined_2']/div/div[2]/div[3]/div[2]/span")))
+            # agent_dropdown_menu_end_engagement_confirm_button = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//span[contains(text(),'End engagement')]")))
             agent_dropdown_menu_end_engagement_confirm_button.click()
         else:
-            agent_dropdown_menu_end_engagement = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class(),'lpview_hideConversation_engagement_menu_item LP_header_floating_actions_menu_item hideConversation')]")))
+            agent_dropdown_menu_end_engagement = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((
+                By.XPATH,
+                "//div[contains(@class(),'lpview_hideConversation_engagement_menu_item LP_header_floating_actions_menu_item hideConversation')]")))
             agent_dropdown_menu_end_engagement.click()
     else:
         print("Conversation control drop-down not found")
@@ -101,22 +105,24 @@ def agent_close_existing_conversations(agent_browser):
 
 def agent_send_invite_message(agent_browser):
     print("Searching the SEND MESSAGE button")
-    if check_exists_by_xpath(agent_browser, 10, "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"):
+    if check_exists_by_xpath(agent_browser, 10,
+                             "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"):
         print("SEND MESSAGE button FOUND")
         print("Trying to click the SEND MESSAGE button...")
         try:
-            WebDriverWait(agent_browser, 5).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"))).click()
+            WebDriverWait(agent_browser, 5).until(EC.element_to_be_clickable((By.XPATH,
+                                                                              "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"))).click()
         except:
             print("Exception: Agent SEND MESSAGE button NOT FOUND")
             print("Trying click Agent SEND MESSAGE button for one more time, by PRESENSE of the ELEMENT....")
-            WebDriverWait(agent_browser, 5).until(EC.presence_of_element_located((By.XPATH, "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"))).click()
-            #agent_browser.execute_script("$('.iframeElement').contents().find('#invite-btn').click()")
-            #agent_browser.execute_script("$('.iframeElement').contents().find('#invite-btn').click()")
-            #agent_browser.execute_script("$find('.lpview_send_msg_button chat_input_button').click();")
+            WebDriverWait(agent_browser, 5).until(EC.presence_of_element_located((By.XPATH,
+                                                                                  "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"))).click()
+            # agent_browser.execute_script("$('.iframeElement').contents().find('#invite-btn').click()")
+            # agent_browser.execute_script("$('.iframeElement').contents().find('#invite-btn').click()")
+            # agent_browser.execute_script("$find('.lpview_send_msg_button chat_input_button').click();")
             agent_browser.execute_script("$('.lpview_send_msg_button chat_input_button').trigger('click';")
     else:
         print("SEND MESSAGE button NOT FOUND")
-
 
 
 def agent_invite_visitor(agent_browser):
@@ -157,55 +163,62 @@ def agent_invite_visitor(agent_browser):
         WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH,
                                                                               "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
 
-        #agent_browser.execute_script("$('.iframeElement').contents().find('#invite-btn').click()")
+        # agent_browser.execute_script("$('.iframeElement').contents().find('#invite-btn').click()")
         WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
         WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH,
-                                                                              "//*[contains(@id,'invite-btn')]"))).click()                                                                                
-        agent_browser.switch_to.default_content()                                                                                 
+                                                                              "//*[contains(@id,'invite-btn')]"))).click()
+        agent_browser.switch_to.default_content()
     else:
         print("Agent IFRAME NOT FOUND")
         raise NoSuchElementException
 
-    # Unable to establish connection. Please check your network. [CRLF] Refresh this widget to attempt to continue.
-
+        # Unable to establish connection. Please check your network. [CRLF] Refresh this widget to attempt to continue.
 
 
 def agent_open_LPVE_widget(agent_browser):
-    #agent_browser.switch_to.default_content()
+    # agent_browser.switch_to.default_content()
     print("Checking existense LPVE widget button")
-    #agent_browser.execute_script("$('.iframeElement').contents().find('#call-btn').click()")
-    
-    #WebDriverWait(agent_browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='LP_MainWidgetsManagerViewController_1']//div[contains(@class,'custom_widget_icon')]")))
-    while not check_exists_by_xpath(agent_browser, 5, "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon_pilot disabled selected')]"):
-        try: 
-            WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]")))
-            WebDriverWait(agent_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
+    # agent_browser.execute_script("$('.iframeElement').contents().find('#call-btn').click()")
+
+    # WebDriverWait(agent_browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='LP_MainWidgetsManagerViewController_1']//div[contains(@class,'custom_widget_icon')]")))
+    while not check_exists_by_xpath(agent_browser, 5,
+                                    "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon_pilot disabled selected')]"):
+        try:
+            WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH,
+                                                                                        "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]")))
+            WebDriverWait(agent_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                    "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
         except StaleElementReferenceException:
             print("StaleElementReferenceException exception: " + str(ex))
-            #agent_browser.execute_script("$('.custom_widget_icon').click()")
+            # agent_browser.execute_script("$('.custom_widget_icon').click()")
             print("Trying one more time....")
-            WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]")))
-            WebDriverWait(agent_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
+            WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH,
+                                                                                        "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]")))
+            WebDriverWait(agent_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                    "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
     print("Clicked the LPVE widges button")
-    #agent_custom_vi_widget.click()
-
+    # agent_custom_vi_widget.click()
 
 
 def agent_wait_page_load_finished(agent_browser):
-    agent_upper_menu = WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@class='top-level-menu-switch']")))
+    agent_upper_menu = WebDriverWait(agent_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//div[@class='top-level-menu-switch']")))
 
 
 def agent_pickup_call(agent_browser):
-    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@id='LP_QueueOrbView_1']//div[contains(text(), 'Accept')]"))).click()
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located(
+        (By.XPATH, "//div[@id='LP_QueueOrbView_1']//div[contains(text(), 'Accept')]"))).click()
 
 
 def agent_close_advertisement_panel(agent_browser):
     if check_exists_by_xpath(agent_browser, 10, "//div[contains(@class, 'connection-profile-close-arrow')]"):
         print("Closing the Advertizement panel")
-        WebDriverWait(agent_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'connection-profile-close-arrow')]"))).click()
+        WebDriverWait(agent_browser, timeout).until(
+            EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'connection-profile-close-arrow')]"))).click()
+
 
 def agent_end_call(agent_browser):
-    #agent_browser.execute_script("$('.iframeElement').contents().find('#call-btn').click()")
+    # agent_browser.execute_script("$('.iframeElement').contents().find('#call-btn').click()")
     WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH,
                                                                                      "//div[contains(@class,'lpview_widget right_pane_widget_wrapper_iframe') and contains(@style,'display: block')]//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
     WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH,
@@ -227,11 +240,13 @@ def agent_unmute_own_in_call_camera(agent_browser):
     print("Agent CAMERA muted")
     time.sleep(1)
 
+
 def agent_mute_own_in_call_microphone(agent_browser):
     print("Muting the Agent MICROPHONE")
     agent_browser.execute_script("$('.iframeElement').contents().find('#mic-btn').click()")
     print("Agent MICROPHONE muted")
     time.sleep(1)
+
 
 def agent_unmute_own_in_call_microphone(agent_browser):
     print("Muting the Agent MICROPHONE")
@@ -239,10 +254,10 @@ def agent_unmute_own_in_call_microphone(agent_browser):
     print("Agent MICROPHONE muted")
     time.sleep(1)
 
+
 def agent_reinvite_call(agent_browser):
-    
-    #print("Switching to Agent IFRAME")
-    #agent_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]"))))
+    # print("Switching to Agent IFRAME")
+    # agent_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]"))))
     """
     print("Checking that the Agent 'The video session has ended' is PRESENT")
     if check_exists_by_xpath(agent_browser, 5, "//div[@id='post-call']//h3[contains(text(),'The video session has ended')]"):
@@ -264,12 +279,12 @@ def agent_reinvite_call(agent_browser):
     else:
         print("Agent 'The video session has ended' is NOT FOUND")
     """
-    
-    #print("Switching the Agent to DEFAUL CONTENT")
-    #agent_browser.switch_to.default_content()
-    #agent_browser.execute_script("$('.iframeElement').contents().find('#resend-invite-btn').click()")
-    #WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, "//div[contains(@id,'LP_CustomWidget') and contains(@style,'display: block')]//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
-    #WebDriverWait(visitor_browser, 5).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id, 'resend')]"))).click()
+
+    # print("Switching the Agent to DEFAUL CONTENT")
+    # agent_browser.switch_to.default_content()
+    # agent_browser.execute_script("$('.iframeElement').contents().find('#resend-invite-btn').click()")
+    # WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, "//div[contains(@id,'LP_CustomWidget') and contains(@style,'display: block')]//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
+    # WebDriverWait(visitor_browser, 5).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id, 'resend')]"))).click()
     agent_browser.execute_script("$('.iframeElement').contents().find('#resend-invite-btn').click()")
 
     """
@@ -302,37 +317,43 @@ def agent_reinvite_call(agent_browser):
         print("Agent END CALL button found")
     else:
         print("Agent END CALL button NOT FOUND")
-        print("Trying to find the END CALL button for one more time...") 
+        print("Trying to find the END CALL button for one more time...")
         try:
             agent_browser.switch_to.default_content()
-            agent_browser.switch_to_frame(WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//div[contains(@class,'lpview_widget right_pane_widget_wrapper_iframe') and contains(@style,'display: block')]//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]"))))
-            WebDriverWait(agent_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//button[@id='call-btn']")))
+            agent_browser.switch_to_frame(WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((
+                By.XPATH,
+                "//div[contains(@class,'lpview_widget right_pane_widget_wrapper_iframe') and contains(@style,'display: block')]//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]"))))
+            WebDriverWait(agent_browser, timeout).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[@id='call-btn']")))
         except:
             print("Agent END CALL button NOT FOUND after RE-INVITE after 2 search attempts")
-    print("Switching back to Agent DEFAULT CONTENT")       
+    print("Switching back to Agent DEFAULT CONTENT")
     agent_browser.switch_to_default_content()
 
 
 def agent_put_call_on_hold(agent_browser):
-    #agent_browser.execute_script("$('.iframeElement').contents().find('#hold-btn').click()")
+    # agent_browser.execute_script("$('.iframeElement').contents().find('#hold-btn').click()")
 
     WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
-    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
+    WebDriverWait(agent_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
 
     if check_exists_by_xpath(agent_browser, 5, "//div[@id='hold-menu']//button[text()='Put call on hold']"):
         print("Putting the call on hold...")
         WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located(
             (By.XPATH, "//div[@id='hold-menu']//button[text()='Put call on hold']"))).click()
         # Checking that the call is really put on hold
-        WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
+        WebDriverWait(agent_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
         if check_exists_by_xpath(agent_browser, 5, "//div[@id='hold-menu']//button[text()='Resume call']"):
             print("The AGENT call is NOW on HOLD")
         else:
             print("The AGENT call is still ONGOING")
-        WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
+        WebDriverWait(agent_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
     else:
         print("The AGENT call is ALREADY on HOLD")
-            # probably one more attempt is needed here
+        # probably one more attempt is needed here
     agent_browser.switch_to_default_content()
     """
     WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
@@ -341,15 +362,18 @@ def agent_put_call_on_hold(agent_browser):
     agent_browser.switch_to_default_content()
     """
 
+
 def agent_resume_call(agent_browser):
-    #agent_browser.execute_script("$('.iframeElement').contents().find('#hold-btn').click()")
+    # agent_browser.execute_script("$('.iframeElement').contents().find('#hold-btn').click()")
 
     WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
-    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
+    WebDriverWait(agent_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
 
     if check_exists_by_xpath(agent_browser, 5, "//div[@id='hold-menu']//button[text()='Resume call']"):
         print("Resuming the call...")
-        WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@id='hold-menu']//button[text()='Resume call']"))).click()
+        WebDriverWait(agent_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//div[@id='hold-menu']//button[text()='Resume call']"))).click()
         # Checking that the call is really put on hold
         WebDriverWait(agent_browser, timeout).until(
             EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
@@ -366,210 +390,307 @@ def agent_resume_call(agent_browser):
     agent_browser.switch_to_default_content()
 
 
-
-
 def visitor_open_chat(visitor_browser):
-    WebDriverWait(visitor_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//img[contains(@class,'LPMimage')]"))).click()
-    WebDriverWait(visitor_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//span[contains(@class,'lp_top-text')]")))
+    WebDriverWait(visitor_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//img[contains(@class,'LPMimage')]"))).click()
+    WebDriverWait(visitor_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//span[contains(@class,'lp_top-text')]")))
 
 
 def visitor_mute_own_in_call_microphone(visitor_browser):
     print("Switching to Visitor IFRAME")
-    visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+    visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
     print("Checking that the Visitor MICROPHONE EXISTS and NOT MUTED")
-    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-on')]"):
+    if check_exists_by_xpath(visitor_browser, 5,
+                             "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-on')]"):
         try:
             print("Trying to MUTE the Visitor MICROPHONE")
-            WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-on')]"))).click()
-            
+            WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-on')]"))).click()
+
         except:
             print("Exception: UNMUTED Visitor MICROPHONE NOT FOUND")
             print("Trying one more time....")
-            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-on')]"))).click()
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                      "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-on')]"))).click()
     else:
-        if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-off red-icon')]"):
+        if check_exists_by_xpath(visitor_browser, 5,
+                                 "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-off red-icon')]"):
             print("Visitor MICROPHONE is already MUTED")
         else:
             print("Visitor MICROPHONE control NOT FOUND")
-    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-off red-icon')]"):
+    if check_exists_by_xpath(visitor_browser, 5,
+                             "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-off red-icon')]"):
         print("Visitor MICROPHONE is MUTED")
     else:
         print("Visitor MICROPHONE is NOT MUTED")
-        print("Trying to find the MUTED Visitor MICROPHONE for one more time...") 
+        print("Trying to find the MUTED Visitor MICROPHONE for one more time...")
         try:
-            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-off red-icon')]")))
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                      "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-off red-icon')]")))
         except:
             print("Visitor MICROPHONE control NOT FOUND in MUTED state after 2 search attempts")
-    print("Switching back to Visitor DEFAULT CONTENT")       
+    print("Switching back to Visitor DEFAULT CONTENT")
     visitor_browser.switch_to_default_content()
 
 
 def visitor_unmute_own_in_call_microphone(visitor_browser):
     print("Switching to Visitor IFRAME")
-    visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+    visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
     print("Checking that the Visitor MICROPHONE EXISTS and  MUTED")
-    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-off red-icon')]"):
+    if check_exists_by_xpath(visitor_browser, 5,
+                             "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-off red-icon')]"):
         try:
             print("Trying to UN-MUTE the Visitor MICROPHONE")
-            WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-off red-icon')]"))).click()
-            
+            WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-off red-icon')]"))).click()
+
         except:
             print("Exception: MUTED Visitor MICROPHONE NOT FOUND")
             print("Trying one more time....")
-            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-off red-icon')]"))).click()
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                      "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-off red-icon')]"))).click()
     else:
-        if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-on')]"):
+        if check_exists_by_xpath(visitor_browser, 5,
+                                 "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-on')]"):
             print("Visitor MICROPHONE is already UN-MUTED")
         else:
             print("Visitor MICROPHONE control NOT FOUND")
     # Checking that MIC has changed its state to UN-MUTED
-    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-on')]"):
+    if check_exists_by_xpath(visitor_browser, 5,
+                             "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-on')]"):
         print("Visitor MICROPHONE is UNMUTED")
     else:
         print("Visitor MICROPHONE is STILL MUTED")
-        print("Trying to find the UNMUTED Visitor MICROPHONE for one more time...") 
+        print("Trying to find the UNMUTED Visitor MICROPHONE for one more time...")
         try:
-            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-on')]")))
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                      "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-on')]")))
         except:
             print("Visitor MICROPHONE control NOT FOUND in UN-MUTED state after 2 search attempts")
-    print("Switching back to Visitor DEFAULT CONTENT")       
+    print("Switching back to Visitor DEFAULT CONTENT")
     visitor_browser.switch_to_default_content()
-
 
 
 def visitor_mute_own_in_call_camera(visitor_browser):
     print("Switching to Visitor IFRAME")
-    visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+    visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
     print("Checking that the Visitor CAMERA EXISTS and NOT MUTED")
-    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]"):
+    if check_exists_by_xpath(visitor_browser, 5,
+                             "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]"):
         try:
             print("Trying to MUTE the Visitor CAMERA")
-            WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]"))).click()
-            
+            WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]"))).click()
+
         except:
             print("Exception: UNMUTED Visitor CAMERA NOT FOUND")
             print("Trying one more time....")
-            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]"))).click()
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                      "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]"))).click()
     else:
-        if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-mic-off red-icon')]"):
+        if check_exists_by_xpath(visitor_browser, 5,
+                                 "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-mic-off red-icon')]"):
             print("Visitor CAMERA is already MUTED")
         else:
             print("Visitor CAMERA control NOT FOUND")
     print("Checking that the CAMERA has been really MUTED...")
-    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-off red-icon')]"):
+    if check_exists_by_xpath(visitor_browser, 5,
+                             "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-off red-icon')]"):
         print("Visitor CAMERA is MUTED")
     else:
         print("Visitor CAMERA is NOT MUTED")
-        print("Trying to find the MUTED Visitor CAMERA for one more time...") 
+        print("Trying to find the MUTED Visitor CAMERA for one more time...")
         try:
-            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-off red-icon')]")))
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                      "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-off red-icon')]")))
         except:
             print("Visitor CAMERA control NOT FOUND in MUTED state after 2 search attempts")
-    print("Switching back to Visitor DEFAULT CONTENT")       
+    print("Switching back to Visitor DEFAULT CONTENT")
     visitor_browser.switch_to_default_content()
 
 
 def visitor_unmute_own_in_call_camera(visitor_browser):
     print("Switching to Visitor IFRAME")
-    visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+    visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
     print("Checking that the Visitor CAMERA EXISTS and  MUTED")
-    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-off red-icon')]"):
+    if check_exists_by_xpath(visitor_browser, 5,
+                             "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-off red-icon')]"):
         try:
             print("Trying to UN-MUTE the Visitor CAMERA")
-            WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-off red-icon')]"))).click()
-            
+            WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-off red-icon')]"))).click()
+
         except:
             print("Exception: MUTED Visitor CAMERA NOT FOUND")
             print("Trying one more time....")
-            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-off red-icon')]"))).click()
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                      "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-off red-icon')]"))).click()
     else:
-        if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]"):
+        if check_exists_by_xpath(visitor_browser, 5,
+                                 "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]"):
             print("Visitor CAMERA is already UN-MUTED")
         else:
             print("Visitor CAMERA control NOT FOUND")
     # Checking that MIC has changed its state to UN-MUTED
-    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]"):
+    if check_exists_by_xpath(visitor_browser, 5,
+                             "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]"):
         print("Visitor CAMERA is UNMUTED")
     else:
         print("Visitor CAMERA is STILL MUTED")
-        print("Trying to find the UNMUTED Visitor CAMERA for one more time...") 
+        print("Trying to find the UNMUTED Visitor CAMERA for one more time...")
         try:
-            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]")))
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                      "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]")))
         except:
             print("Visitor CAMERA control NOT FOUND in UN-MUTED state after 2 search attempts")
-    print("Switching back to Visitor DEFAULT CONTENT")       
+    print("Switching back to Visitor DEFAULT CONTENT")
     visitor_browser.switch_to_default_content()
 
 
 def visitor_end_call(visitor_browser):
     print("Switching to Visitor IFRAME")
-    visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+    visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
     print("Checking that the Visitor END CALL button EXISTS")
-    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]"):
+    if check_exists_by_xpath(visitor_browser, 5,
+                             "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]"):
         try:
             print("Trying to END the call from Visitor side")
-            WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]"))).click()
-            
+            WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]"))).click()
+
         except:
             print("Exception: END CALL button for Visitor NOT FOUND")
             print("Trying one more time....")
-            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]"))).click()
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                      "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]"))).click()
     else:
         print("Visitor END CALL button not found")
-        
+
     # Checking that Visitor screen shows 'The video session has ended'
-    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='post-call']/div[contains(@id,'post-call-content')]/h3/span[contains(text(),'The video session has ended')]"):
+    if check_exists_by_xpath(visitor_browser, 5,
+                             "//div[@id='post-call']/div[contains(@id,'post-call-content')]/h3/span[contains(text(),'The video session has ended')]"):
         print("Visitor call has been ENDED with 'The video session has ended'")
     else:
         print("Visitor 'The video session has ended' NOT FOUND")
-        print("Trying to find the Visitor 'The video session has ended' for one more time...") 
+        print("Trying to find the Visitor 'The video session has ended' for one more time...")
         try:
-            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='post-call']/div[contains(@id,'post-call-content')]/h3/span[contains(text(),'The video session has ended')]")))
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                      "//div[@id='post-call']/div[contains(@id,'post-call-content')]/h3/span[contains(text(),'The video session has ended')]")))
         except:
             print("Visitor 'The video session has ended' NOT FOUND after 2 search attempts")
 
     # Checking that Visitor screen shows 'REJOIN' button
-    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]"):
+    if check_exists_by_xpath(visitor_browser, 5,
+                             "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]"):
         print("Visitor call has been ENDED and REJOIN button displayed")
     else:
         print("Visitor REJOIN button NOT FOUND")
-        print("Trying to find the Visitor REJOIN button for one more time...") 
+        print("Trying to find the Visitor REJOIN button for one more time...")
         try:
-            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]")))
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                      "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]")))
         except:
             print("Visitor REJOIN button NOT FOUND after 2 search attempts")
-    print("Switching back to Visitor DEFAULT CONTENT")       
+    print("Switching back to Visitor DEFAULT CONTENT")
     visitor_browser.switch_to_default_content()
-
 
 
 def visitor_rejoin_call(visitor_browser):
     print("Switching to Visitor IFRAME")
-    visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+    visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
     print("Checking that the Visitor REJOIN button is PRESENT")
-    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]"):
+    if check_exists_by_xpath(visitor_browser, 5,
+                             "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]"):
         try:
             print("Trying to click Visitor REJOIN button")
-            WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]"))).click()
-            
+            WebDriverWait(visitor_browser, 5).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]"))).click()
+
         except:
             print("Exception: Visitor REJOIN button NOT FOUND")
             print("Trying click Visitor REJOIN button for one more time....")
-            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]"))).click()
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                      "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]"))).click()
     else:
         print("Visitor REJOIN button NOT FOUND")
     # Checking that Visitor REJOINED the call (END CALL button present)
-    if check_exists_by_xpath(visitor_browser, 5, "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]"):
+    if check_exists_by_xpath(visitor_browser, 5,
+                             "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]"):
         print("Visitor Re-Joined the call")
     else:
         print("Visitor could not REJOIN the call, END CALL button NOT FOUND")
-        print("Trying to find the END CALL button for one more time...") 
+        print("Trying to find the END CALL button for one more time...")
         try:
-            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]")))
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
+                                                                                      "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]")))
         except:
             print("Visitor END CALL button NOT FOUND after REJOIN after 2 search attempts")
-    print("Switching back to Visitor DEFAULT CONTENT")       
+    print("Switching back to Visitor DEFAULT CONTENT")
     visitor_browser.switch_to_default_content()
+
+
+def agent_enable_video(agent_browser):
+    active_video_button = "//button[contains(@class,'active') and contains(@id,'video-toggle-button')]"
+    video_toggle_button = 'video-toggle-button'
+    for_this_call_only = "//p[contains(@class,'text-muted')]"
+
+    print("Switching to Agents DEFAULT CONTENT")
+    agent_browser.switch_to_default_content()
+    print("Switching to Agent IFRAME")
+    WebDriverWait(agent_browser, default_timeout).until(
+        EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+
+    if check_exists_by_xpath(agent_browser, default_timeout, active_video_button):
+        print("Agent VIDEO BUTTON is already enabled")
+    else:
+        print("Checking that the Agent VIDEO BUTTON EXISTS and 'DISABLED'")
+        try:
+            agent_browser.find_element(By.ID, video_toggle_button).click()
+            print("Agent VIDEO BUTTON has been clicked")
+            # bug work-around
+            agent_browser.find_element(By.XPATH, for_this_call_only).click()
+            time.sleep(1)
+        except:
+            print("Exception: Agent 'DISABLED' VIDEO BUTTON NOT FOUND")
+
+    print("Switching back to Agents DEFAULT CONTENT")
+    agent_browser.switch_to_default_content()
+
+
+def agent_disable_video(agent_browser):
+    active_video_button = "//button[contains(@class,'active') and contains(@id,'video-toggle-button')]"
+    video_toggle_button = 'video-toggle-button'
+    for_this_call_only = "//p[contains(@class,'text-muted')]"
+
+    print("Switching to Agents DEFAULT CONTENT")
+    agent_browser.switch_to_default_content()
+    print("Switching to Agent IFRAME")
+    WebDriverWait(agent_browser, default_timeout).until(
+        EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+
+    if check_exists_by_xpath(agent_browser, default_timeout, active_video_button):
+        print("Checking that the Agent VIDEO BUTTON EXISTS and 'ENABLED'")
+        try:
+            agent_browser.find_element(By.ID, video_toggle_button).click()
+            print("Agent VIDEO BUTTON has been clicked")
+            # bug work-around
+            agent_browser.find_element(By.XPATH, for_this_call_only).click()
+            time.sleep(1)
+        except:
+            print("Exception: Agent 'ENABLED' VIDEO BUTTON NOT FOUND")
+    else:
+        print("Agent VIDEO BUTTON is already disabled")
+
+    print("Switching back to Agents DEFAULT CONTENT")
+    agent_browser.switch_to_default_content()
+
 
 # Page Object ==========================================================================================================
 # <div id="VyIRojPtYS2w_renderer_vidyoRemoteName0" class="guest">demoUser_97567</div> # Counterparty name on the screen
@@ -591,11 +712,13 @@ def visitor_rejoin_call(visitor_browser):
 # sub - class="notifierMessage" text Please try again.
 
 
-#driver = webdriver.Chrome(chrome_options=options)
+# driver = webdriver.Chrome(chrome_options=options)
 
-#CONFIG
+# CONFIG
 
 timeout = 30
+default_timeout = 10
+small_timeout = 5
 counter = 1
 
 iframe_xpath = "//div[contains(@class,'lpview_widget right_pane_widget_wrapper_iframe') and contains(@style,'display: block')]//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]"
@@ -604,25 +727,27 @@ while counter == 1:
     print("Run " + str(counter) + " started")
     try:
         options = webdriver.ChromeOptions()
-        #print(options)
-        #options.addArguments("start-maximized")
+        # print(options)
+        # options.addArguments("start-maximized")
         options.add_argument("--disable-notifications")
         options.add_argument("--disable-web-security")
         options.add_argument("--use-fake-ui-for-media-stream")
         options.add_argument("--mute-audio")
-        
-        
-        #print(options.to_capabilities()) --disable-web-security
-        #agent_browser = webdriver.Remote(command_executor='http://127.0.0.1:4444/wd/hub', desired_capabilities=DesiredCapabilities.CHROME)
-        #agent_browser = webdriver.Remote(command_executor='http://127.0.0.1:4444/wd/hub', desired_capabilities=options.to_capabilities())
+
+        # print(options.to_capabilities()) --disable-web-security
+        # agent_browser = webdriver.Remote(command_executor='http://127.0.0.1:4444/wd/hub', desired_capabilities=DesiredCapabilities.CHROME)
+        # agent_browser = webdriver.Remote(command_executor='http://127.0.0.1:4444/wd/hub', desired_capabilities=options.to_capabilities())
         agent_browser = webdriver.Chrome(chrome_options=options)
-        
+
+        agent_browser.implicitly_wait(small_timeout)
+        agent_browser.set_script_timeout(small_timeout)
+
         agent_browser.get('https://va-a.authentication.liveperson.net/')
         agent_browser.maximize_window()
-        #agent_browser.implicitly_wait(30)
-        agent_site_login(agent_browser, 'Agent2', 'Agent123', '54424706') #VEL-QA
-        #agent_site_login(agent_browser, 'Bohdan', 'Bohdan123', '57877913') # VEL
-        
+        # agent_browser.implicitly_wait(30)
+        agent_site_login(agent_browser, 'Agent2', 'Agent123', '54424706')  # VEL-QA
+        # agent_site_login(agent_browser, 'Bohdan', 'Bohdan123', '57877913') # VEL
+
         """
         visitor_options = webdriver.ChromeOptions()
         #print(options)
@@ -632,78 +757,81 @@ while counter == 1:
         visitor_options.add_argument("--use-fake-ui-for-media-stream")
         """
 
-        #visitor_browser = webdriver.Remote(command_executor='http://127.0.0.1:4444/wd/hub', desired_capabilities=DesiredCapabilities.CHROME)
+        # visitor_browser = webdriver.Remote(command_executor='http://127.0.0.1:4444/wd/hub', desired_capabilities=DesiredCapabilities.CHROME)
         visitor_browser = webdriver.Chrome(chrome_options=options)
-        
-        visitor_browser.get('https://pavelivanov1.github.io/LPVE/')  #VEL-QA
-        #visitor_browser.get('https://ishapiro11.github.io/liveperson-visitor/ilanaaws.htm') # VEL
-        #time.sleep(5)
-        
+
+        visitor_browser.get('https://pavelivanov1.github.io/LPVE/')  # VEL-QA
+        # visitor_browser.get('https://ishapiro11.github.io/liveperson-visitor/ilanaaws.htm') # VEL
+        # time.sleep(5)
+
         agent_wait_page_load_finished(agent_browser)
-        
+
         """
         visitor_LE_chat_tab = WebDriverWait(visitor_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//img[contains(@class,'LPMimage')]")))
         visitor_LE_chat_tab.click()
         """
 
-        #visitor_browser.refresh()
-        
-        
-        #visitor_chat_caption = WebDriverWait(visitor_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//span[contains(@class,'lp_top-text')]")))
+        # visitor_browser.refresh()
+
+
+        # visitor_chat_caption = WebDriverWait(visitor_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//span[contains(@class,'lp_top-text')]")))
         visitor_open_chat(visitor_browser)
-        
-        #agent_incoming_call = WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@id='LP_QueueOrbView_1']//div[contains(text(), 'Accept')]")))
-        #agent_pickup_call = WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@id='LP_QueueOrbView_1']//div[contains(text(), 'Accept')]"))).click()
+
+        # agent_incoming_call = WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@id='LP_QueueOrbView_1']//div[contains(text(), 'Accept')]")))
+        # agent_pickup_call = WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@id='LP_QueueOrbView_1']//div[contains(text(), 'Accept')]"))).click()
         agent_pickup_call(agent_browser)
 
-        #agent_open_LPVE_widget(agent_browser)
+        # agent_open_LPVE_widget(agent_browser)
         """
         alpve = WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@id='LP_MainWidgetsManagerViewController_1']//div[contains(@class,'custom_widget_icon')]")))
         alpve = WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]")))
         alpve.click()
         """
         agent_open_LPVE_widget(agent_browser)
-        
+
         agent_close_advertisement_panel(agent_browser)
-        
+
+        agent_enable_video(agent_browser)
+
+        agent_disable_video(agent_browser)
+
+        agent_enable_video(agent_browser)
+
         agent_invite_visitor(agent_browser)
-        
+
         # Mute camera id="video-toggle-button"
         # Agent, Before call
-        #agent_browser.execute_script("$('.iframeElement').contents().find('#video-toggle-button').click()")
-        #agent_browser.execute_script("$('.iframeElement').contents().find('#video-toggle-button').click()")
+        # agent_browser.execute_script("$('.iframeElement').contents().find('#video-toggle-button').click()")
+        # agent_browser.execute_script("$('.iframeElement').contents().find('#video-toggle-button').click()")
         # Mute mic id="microphone-toggle-button"
-        #agent_browser.execute_script("$('.iframeElement').contents().find('#microphone-toggle-button').click()")
-        #agent_browser.execute_script("$('.iframeElement').contents().find('#microphone-toggle-button').click()")
+        # agent_browser.execute_script("$('.iframeElement').contents().find('#microphone-toggle-button').click()")
+        # agent_browser.execute_script("$('.iframeElement').contents().find('#microphone-toggle-button').click()")
 
-      
+
         # Sending the invitation message on the Agent side
-        WebDriverWait(agent_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"))).click()
-        
-        
-        
-        
+        WebDriverWait(agent_browser, timeout).until(EC.element_to_be_clickable(
+            (By.XPATH, "//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"))).click()
+
         # Waiting for the invitation indicator on the Visitor side
-        visitor_chat_vidyo_invitation_indicator = WebDriverWait(visitor_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//span[contains(@class,'lp_notification_text')]")))
-        
+        visitor_chat_vidyo_invitation_indicator = WebDriverWait(visitor_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//span[contains(@class,'lp_notification_text')]")))
+
         # Visitor opens the widget after an invite
-        WebDriverWait(visitor_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@class,'lp_slider')]"))).click()
-            
-        
-        
-        
+        WebDriverWait(visitor_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//button[contains(@class,'lp_slider')]"))).click()
+
         '''
         agent_invite_button = WebDriverWait(agent_browser, 30).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'invite-btn')]")))
         agent_invite_button = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(@id,'invite-btn')]")))
         print(agent_invite_button)
         agent_invite_button.click()
         '''
-        
-        
-        
+
         # id LPFRM_eb3f01-4a22-9d2e
-        visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
-        WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(@id,'join-button')]"))).click()
+        visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+        WebDriverWait(visitor_browser, timeout).until(
+            EC.element_to_be_clickable((By.XPATH, "//button[contains(@id,'join-button')]"))).click()
         visitor_browser.switch_to_default_content()
         time.sleep(5)
 
@@ -722,7 +850,7 @@ while counter == 1:
 
         agent_mute_own_in_call_camera(agent_browser)
         agent_unmute_own_in_call_camera(agent_browser)
-        
+
         agent_unmute_own_in_call_microphone(agent_browser)
 
         visitor_unmute_own_in_call_microphone(visitor_browser)
@@ -751,26 +879,25 @@ while counter == 1:
         print("Agent MICROPHONE un-muted")
         time.sleep(1)
         """
-        
+
         # End the call at the Visitor side
         visitor_end_call(visitor_browser)
-        #print("Clicked on Visitor END CALL button")
+        # print("Clicked on Visitor END CALL button")
 
         # ReJoin the call at the Visitor side
         visitor_rejoin_call(visitor_browser)
 
-        
         # End the call at the Agent side
         agent_browser.execute_script("$('.iframeElement').contents().find('#call-btn').click()")
         print("Clicked on Agent END CALL button")
-        
+
         time.sleep(5)
         print("Agent: RE-INVITING...")
         agent_reinvite_call(agent_browser)
         time.sleep(5)
-        #WebDriverWait(agent_browser, 10).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
+        # WebDriverWait(agent_browser, 10).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
 
-        #<button id="refresh-btn" class="btn btn-success btn-lg">Refresh</button>
+        # <button id="refresh-btn" class="btn btn-success btn-lg">Refresh</button>
 
         # <div id="ended"><div class="vertical-center"><h1>This chat has ended.</h1></div><a class="btn btn-large btn-success has-spinner " title="Download zip" id="pre-logs-button"><span class="spinner"><div class="icon-spin"></div></span><!-- react-text: 39 -->Diagnostic reports<!-- /react-text --></a></div>
         print("Agent: ENDING THE CALL...")
@@ -787,13 +914,13 @@ while counter == 1:
         pass
     except:
         print("Unknown exception")
-        pass    
+        pass
     finally:
-        #time.sleep(10)
+        # time.sleep(10)
         agent_browser.quit()
-        #print(agent_browser)
+        # print(agent_browser)
         visitor_browser.quit()
-        #print(visitor_browser)
-        #time.sleep(10)
+        # print(visitor_browser)
+        # time.sleep(10)
         print("Run " + str(counter) + " finished")
         counter = counter + 1
