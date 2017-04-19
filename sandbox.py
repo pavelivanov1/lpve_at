@@ -340,6 +340,7 @@ def agent_put_call_on_hold(agent_browser):
             print("The AGENT call is NOW on HOLD")
         else:
             print("The AGENT call is still ONGOING")
+            # Insert FAILURE here
         WebDriverWait(agent_browser, timeout).until(
             EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
     else:
@@ -372,6 +373,7 @@ def agent_resume_call(agent_browser):
             print("The AGENT call is NOW RESUMED")
         else:
             print("The AGENT call is still ON HOLD")
+            # Insert FAILURE here
             # probably one more attempt is needed here
         WebDriverWait(agent_browser, timeout).until(
             EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
@@ -399,10 +401,44 @@ def agent_mute_visitor_mic(agent_browser):
             print("The Visitor's MIC is NOW on MUTE")
         else:
             print("The Visitor's MIC is still ON")
+            # Insert FAILURE here
         WebDriverWait(agent_browser, timeout).until(
             EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
     else:
         print("The Visitor's MIC is ALREADY MUTED")
+        # probably one more attempt is needed here
+    agent_browser.switch_to_default_content()
+    """
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Putting the call on hold...")
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@id='hold-menu']//button[text()='Put call on hold']"))).click()
+    agent_browser.switch_to_default_content()
+    """
+
+
+def agent_unmute_visitor_mic(agent_browser):
+    # agent_browser.execute_script("$('.iframeElement').contents().find('#hold-btn').click()")
+
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    WebDriverWait(agent_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
+
+    if check_exists_by_xpath(agent_browser, 5, "//div[@id='hold-menu']//button[text()=\"Unmute visitor's mic\"]"):
+        print("UNMUTING the Visitor's MIC...")
+        WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located(
+            (By.XPATH, "//div[@id='hold-menu']//button[text()=\"Unmute visitor's mic\"]"))).click()
+        # Checking that the call is really put on hold
+        WebDriverWait(agent_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
+        if check_exists_by_xpath(agent_browser, 5, "//div[@id='hold-menu']//button[text()=\"Mute visitor's mic\"]"):
+            print("The Visitor's MIC is now UNMUTED")
+        else:
+            print("The Visitor's MIC is still ON MUTE")
+            # Insert FAILURE here
+        WebDriverWait(agent_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
+    else:
+        print("The Visitor's MIC is ALREADY UNMUTED")
         # probably one more attempt is needed here
     agent_browser.switch_to_default_content()
     """
@@ -431,12 +467,39 @@ def agent_mute_visitor_cam(agent_browser):
             print("The Visitor's CAM is NOW on MUTE")
         else:
             print("The Visitor's CAM is still ON")
+            # Insert FAILURE here
             # probably one more attempt is needed here
         WebDriverWait(agent_browser, timeout).until(
             EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
     else:
         print("The Visitor's CAM is ALREADY MUTED")
+    agent_browser.switch_to_default_content()
 
+
+def agent_unmute_visitor_cam(agent_browser):
+    # agent_browser.execute_script("$('.iframeElement').contents().find('#hold-btn').click()")
+
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    WebDriverWait(agent_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
+
+    if check_exists_by_xpath(agent_browser, 5, "//div[@id='hold-menu']//button[text()=\"Unmute visitor's cam\"]"):
+        print("Resuming the VISITOR's CAMERA...")
+        WebDriverWait(agent_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//div[@id='hold-menu']//button[text()=\"Unmute visitor's cam\"]"))).click()
+        # Checking that the call is really put on hold
+        WebDriverWait(agent_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
+        if check_exists_by_xpath(agent_browser, 5, "//div[@id='hold-menu']//button[text()=\"Mute visitor's cam\"]"):
+            print("The Visitor's CAM is now RESUMED")
+        else:
+            print("The Visitor's CAM is still ON MUTE")
+            # Insert FAILURE here
+            # probably one more attempt is needed here
+        WebDriverWait(agent_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
+    else:
+        print("The Visitor's CAM is ALREADY UNMUTED")
     agent_browser.switch_to_default_content()
 
 
@@ -752,7 +815,7 @@ def agent_enable_audio(agent_browser):
     agent_browser.switch_to_default_content()
     print("Switching to Agent IFRAME")
     WebDriverWait(agent_browser, default_timeout).until(
-        EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+        EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
 
     if check_exists_by_xpath(agent_browser, default_timeout, active_video_button):
         print("Agent MICROPHONE BUTTON is already enabled")
@@ -780,7 +843,7 @@ def agent_disable_audio(agent_browser):
     agent_browser.switch_to_default_content()
     print("Switching to Agent IFRAME")
     WebDriverWait(agent_browser, default_timeout).until(
-        EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+        EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
 
     if check_exists_by_xpath(agent_browser, default_timeout, active_video_button):
         print("Checking that the Agent MICROPHONE BUTTON EXISTS and 'ENABLED'")
@@ -981,6 +1044,12 @@ while counter == 1:
         time.sleep(1)
 
         agent_mute_visitor_cam(agent_browser)
+        time.sleep(1)
+
+        agent_unmute_visitor_cam(agent_browser)
+        time.sleep(1)
+
+        agent_unmute_visitor_mic(agent_browser)
         time.sleep(1)
 
         """
