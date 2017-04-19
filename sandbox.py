@@ -79,12 +79,10 @@ def agent_site_login(agent_browser, username, userpass, account_number):
 def agent_close_existing_conversations(agent_browser):
     while check_exists_by_xpath(agent_browser,
                                 "//div[contains(@class,'lpview_dropdown_menu_container lpview_dropdown_menu_button actions_menu')]"):
-        agent_engagement_dropdown_menu = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH,
-                                                                                                            "//div[contains(@class,'lpview_dropdown_menu_container lpview_dropdown_menu_button actions_menu')]")))
+        agent_engagement_dropdown_menu = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable([By.XPATH,"//div[contains(@class,'lpview_dropdown_menu_container lpview_dropdown_menu_button actions_menu')]"]))
         agent_engagement_dropdown_menu.click()
         if check_exists_by_xpath(agent_browser, "//div[contains(text(),'End engagement')]"):
-            agent_dropdown_menu_end_engagement = WebDriverWait(agent_browser, 30).until(
-                EC.element_to_be_clickable((By.XPATH, "//div[contains(text(),'End engagement')]")))
+            agent_dropdown_menu_end_engagement = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(text(),'End engagement')]")))
             agent_dropdown_menu_end_engagement.click()
             # agent_dropdown_menu_end_engagement_confirm_button = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class(),'lpview_okButton button dark_bg grey operative')]")))
             # agent_dropdown_menu_end_engagement_confirm_button = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class(),'lpview_okButton')]")))
@@ -105,8 +103,7 @@ def agent_close_existing_conversations(agent_browser):
 
 def agent_send_invite_message(agent_browser):
     print("Searching the SEND MESSAGE button")
-    if check_exists_by_xpath(agent_browser, 10,
-                             "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"):
+    if check_exists_by_xpath(agent_browser, 10, "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"):
         print("SEND MESSAGE button FOUND")
         print("Trying to click the SEND MESSAGE button...")
         try:
@@ -127,10 +124,10 @@ def agent_send_invite_message(agent_browser):
 
 def agent_invite_visitor(agent_browser):
     print("Verifying that the Agent IFRAME exists...")
-    if check_exists_by_xpath(agent_browser, 2, iframe_xpath):
+    if check_exists_by_xpath(agent_browser, 2, agent_iframe_xpath):
         print("Agent IFRAME FOUND")
         print("Switching the Agent to IFRAME...")
-        WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+        WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
         print("Searching for 'Connecting to visitor' string")
         if check_exists_by_xpath(agent_browser, 2, "//div[@id='pre-call']//h1[contains(text(),'Connecting')]"):
             print("'Connecting to visitor' FOUND")
@@ -141,8 +138,7 @@ def agent_invite_visitor(agent_browser):
                                                                               "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
 
         print("Searching for 'Detecting video capability' string")
-        WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH,
-                                                                                         "//div[contains(@class,'lpview_widget right_pane_widget_wrapper_iframe') and contains(@style,'display: block')]//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
+        WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
         if check_exists_by_xpath(agent_browser, 2, "//div[@id='pre-call']//h1[contains(text(),'Detecting')]"):
             print("'Detecting video capability' FOUND")
         else:
@@ -152,8 +148,7 @@ def agent_invite_visitor(agent_browser):
                                                                               "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
 
         print("Searching for 'Click invite to initialize a video call' string")
-        WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH,
-                                                                                         "//div[contains(@class,'lpview_widget right_pane_widget_wrapper_iframe') and contains(@style,'display: block')]//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
+        WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH,agent_iframe_xpath)))
         if check_exists_by_xpath(agent_browser, 2,
                                  "//div[@id='pre-call']//h1[contains(text(),'Click invite to initialize a video call')]"):
             print("'Click invite to initialize a video call' FOUND")
@@ -164,7 +159,7 @@ def agent_invite_visitor(agent_browser):
                                                                               "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
 
         # agent_browser.execute_script("$('.iframeElement').contents().find('#invite-btn').click()")
-        WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+        WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
         WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH,
                                                                               "//*[contains(@id,'invite-btn')]"))).click()
         agent_browser.switch_to.default_content()
@@ -219,8 +214,7 @@ def agent_close_advertisement_panel(agent_browser):
 
 def agent_end_call(agent_browser):
     # agent_browser.execute_script("$('.iframeElement').contents().find('#call-btn').click()")
-    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH,
-                                                                                     "//div[contains(@class,'lpview_widget right_pane_widget_wrapper_iframe') and contains(@style,'display: block')]//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
     WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH,
                                                                           "//*[contains(@id,'call-btn')]"))).click()
     agent_browser.switch_to.default_content()
@@ -309,8 +303,7 @@ def agent_reinvite_call(agent_browser):
     print("Agent: Sending the INVITE MESSAGE")
     agent_send_invite_message(agent_browser)
     print("Switching to Agent IFRAME")
-    agent_browser.switch_to_frame(WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH,
-                                                                                                         "//div[contains(@class,'lpview_widget right_pane_widget_wrapper_iframe') and contains(@style,'display: block')]//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]"))))
+    agent_browser.switch_to_frame(WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
     print("Checking that the Agent END CALL button is PRESENT")
 
     if check_exists_by_xpath(agent_browser, 5, "//button[@id='call-btn']"):
@@ -320,9 +313,7 @@ def agent_reinvite_call(agent_browser):
         print("Trying to find the END CALL button for one more time...")
         try:
             agent_browser.switch_to.default_content()
-            agent_browser.switch_to_frame(WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((
-                By.XPATH,
-                "//div[contains(@class,'lpview_widget right_pane_widget_wrapper_iframe') and contains(@style,'display: block')]//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]"))))
+            agent_browser.switch_to_frame(WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
             WebDriverWait(agent_browser, timeout).until(
                 EC.element_to_be_clickable((By.XPATH, "//button[@id='call-btn']")))
         except:
@@ -334,7 +325,7 @@ def agent_reinvite_call(agent_browser):
 def agent_put_call_on_hold(agent_browser):
     # agent_browser.execute_script("$('.iframeElement').contents().find('#hold-btn').click()")
 
-    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
     WebDriverWait(agent_browser, timeout).until(
         EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
 
@@ -356,7 +347,7 @@ def agent_put_call_on_hold(agent_browser):
         # probably one more attempt is needed here
     agent_browser.switch_to_default_content()
     """
-    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
     print("Putting the call on hold...")
     WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@id='hold-menu']//button[text()='Put call on hold']"))).click()
     agent_browser.switch_to_default_content()
@@ -366,7 +357,7 @@ def agent_put_call_on_hold(agent_browser):
 def agent_resume_call(agent_browser):
     # agent_browser.execute_script("$('.iframeElement').contents().find('#hold-btn').click()")
 
-    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
     WebDriverWait(agent_browser, timeout).until(
         EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
 
@@ -390,6 +381,66 @@ def agent_resume_call(agent_browser):
     agent_browser.switch_to_default_content()
 
 
+def agent_mute_visitor_mic(agent_browser):
+    # agent_browser.execute_script("$('.iframeElement').contents().find('#hold-btn').click()")
+
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    WebDriverWait(agent_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
+
+    if check_exists_by_xpath(agent_browser, 5, "//div[@id='hold-menu']//button[text()=\"Mute visitor's mic\"]"):
+        print("Putting the Visitor's MIC on MUTE...")
+        WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located(
+            (By.XPATH, "//div[@id='hold-menu']//button[text()=\"Mute visitor's mic\"]"))).click()
+        # Checking that the call is really put on hold
+        WebDriverWait(agent_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
+        if check_exists_by_xpath(agent_browser, 5, "//div[@id='hold-menu']//button[text()=\"Unmute visitor's mic\"]"):
+            print("The Visitor's MIC is NOW on MUTE")
+        else:
+            print("The Visitor's MIC is still ON")
+        WebDriverWait(agent_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
+    else:
+        print("The Visitor's MIC is ALREADY MUTED")
+        # probably one more attempt is needed here
+    agent_browser.switch_to_default_content()
+    """
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Putting the call on hold...")
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@id='hold-menu']//button[text()='Put call on hold']"))).click()
+    agent_browser.switch_to_default_content()
+    """
+
+
+def agent_mute_visitor_cam(agent_browser):
+    # agent_browser.execute_script("$('.iframeElement').contents().find('#hold-btn').click()")
+
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    WebDriverWait(agent_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
+
+    if check_exists_by_xpath(agent_browser, 5, "//div[@id='hold-menu']//button[text()=\"Mute visitor's cam\"]"):
+        print("Resuming the call...")
+        WebDriverWait(agent_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//div[@id='hold-menu']//button[text()=\"Mute visitor's cam\"]"))).click()
+        # Checking that the call is really put on hold
+        WebDriverWait(agent_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
+        if check_exists_by_xpath(agent_browser, 5, "//div[@id='hold-menu']//button[text()=\"Unmute visitor's cam\"]"):
+            print("The Visitor's CAM is NOW on MUTE")
+        else:
+            print("The Visitor's CAM is still ON")
+            # probably one more attempt is needed here
+        WebDriverWait(agent_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
+    else:
+        print("The Visitor's CAM is ALREADY MUTED")
+
+    agent_browser.switch_to_default_content()
+
+
+
 def visitor_open_chat(visitor_browser):
     WebDriverWait(visitor_browser, timeout).until(
         EC.presence_of_element_located((By.XPATH, "//img[contains(@class,'LPMimage')]"))).click()
@@ -400,7 +451,7 @@ def visitor_open_chat(visitor_browser):
 def visitor_mute_own_in_call_microphone(visitor_browser):
     print("Switching to Visitor IFRAME")
     visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+        EC.presence_of_element_located((By.XPATH, visitor_iframe_xpath))))
     print("Checking that the Visitor MICROPHONE EXISTS and NOT MUTED")
     if check_exists_by_xpath(visitor_browser, 5,
                              "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-on')]"):
@@ -438,7 +489,7 @@ def visitor_mute_own_in_call_microphone(visitor_browser):
 def visitor_unmute_own_in_call_microphone(visitor_browser):
     print("Switching to Visitor IFRAME")
     visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+        EC.presence_of_element_located((By.XPATH, visitor_iframe_xpath))))
     print("Checking that the Visitor MICROPHONE EXISTS and  MUTED")
     if check_exists_by_xpath(visitor_browser, 5,
                              "//div[@id='call-controls']/button[contains(@id,'mic-btn')]/i[contains(@class,'lpicon-mic-off red-icon')]"):
@@ -477,7 +528,7 @@ def visitor_unmute_own_in_call_microphone(visitor_browser):
 def visitor_mute_own_in_call_camera(visitor_browser):
     print("Switching to Visitor IFRAME")
     visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+        EC.presence_of_element_located((By.XPATH, visitor_iframe_xpath))))
     print("Checking that the Visitor CAMERA EXISTS and NOT MUTED")
     if check_exists_by_xpath(visitor_browser, 5,
                              "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-on')]"):
@@ -516,7 +567,7 @@ def visitor_mute_own_in_call_camera(visitor_browser):
 def visitor_unmute_own_in_call_camera(visitor_browser):
     print("Switching to Visitor IFRAME")
     visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+        EC.presence_of_element_located((By.XPATH, visitor_iframe_xpath))))
     print("Checking that the Visitor CAMERA EXISTS and  MUTED")
     if check_exists_by_xpath(visitor_browser, 5,
                              "//div[@id='call-controls']/button[contains(@id,'video-btn')]/i[contains(@class,'lpicon-video-off red-icon')]"):
@@ -555,7 +606,7 @@ def visitor_unmute_own_in_call_camera(visitor_browser):
 def visitor_end_call(visitor_browser):
     print("Switching to Visitor IFRAME")
     visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+        EC.presence_of_element_located((By.XPATH, visitor_iframe_xpath))))
     print("Checking that the Visitor END CALL button EXISTS")
     if check_exists_by_xpath(visitor_browser, 5,
                              "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]"):
@@ -604,7 +655,7 @@ def visitor_end_call(visitor_browser):
 def visitor_rejoin_call(visitor_browser):
     print("Switching to Visitor IFRAME")
     visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+        EC.presence_of_element_located((By.XPATH, visitor_iframe_xpath))))
     print("Checking that the Visitor REJOIN button is PRESENT")
     if check_exists_by_xpath(visitor_browser, 5,
                              "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]"):
@@ -645,7 +696,7 @@ def agent_enable_video(agent_browser):
     agent_browser.switch_to_default_content()
     print("Switching to Agent IFRAME")
     WebDriverWait(agent_browser, default_timeout).until(
-        EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+        EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
 
     if check_exists_by_xpath(agent_browser, default_timeout, active_video_button):
         print("Agent VIDEO BUTTON is already enabled")
@@ -673,7 +724,7 @@ def agent_disable_video(agent_browser):
     agent_browser.switch_to_default_content()
     print("Switching to Agent IFRAME")
     WebDriverWait(agent_browser, default_timeout).until(
-        EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+        EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
 
     if check_exists_by_xpath(agent_browser, default_timeout, active_video_button):
         print("Checking that the Agent VIDEO BUTTON EXISTS and 'ENABLED'")
@@ -721,7 +772,8 @@ default_timeout = 10
 small_timeout = 5
 counter = 1
 
-iframe_xpath = "//div[contains(@class,'lpview_widget right_pane_widget_wrapper_iframe') and contains(@style,'display: block')]//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]"
+agent_iframe_xpath = "//div[contains(@class,'lpview_widget right_pane_widget_wrapper_iframe') and contains(@style,'display: block')]//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]"
+visitor_iframe_xpath = "//iframe[contains(@id,'LPFRM')]"
 
 while counter == 1:
     print("Run " + str(counter) + " started")
@@ -858,8 +910,16 @@ while counter == 1:
 
         agent_put_call_on_hold(agent_browser)
         time.sleep(1)
+        
+
         agent_resume_call(agent_browser)
-        time.sleep(2)
+        time.sleep(1)
+
+        agent_mute_visitor_mic(agent_browser)
+        time.sleep(1)
+
+        agent_mute_visitor_cam(agent_browser)
+        time.sleep(1)
 
         """
         # Un-mute the camera on Agent side
