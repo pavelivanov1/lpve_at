@@ -79,10 +79,12 @@ def agent_site_login(agent_browser, username, userpass, account_number):
 def agent_close_existing_conversations(agent_browser):
     while check_exists_by_xpath(agent_browser,
                                 "//div[contains(@class,'lpview_dropdown_menu_container lpview_dropdown_menu_button actions_menu')]"):
-        agent_engagement_dropdown_menu = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable([By.XPATH,"//div[contains(@class,'lpview_dropdown_menu_container lpview_dropdown_menu_button actions_menu')]"]))
+        agent_engagement_dropdown_menu = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable([By.XPATH,
+                                                                                                            "//div[contains(@class,'lpview_dropdown_menu_container lpview_dropdown_menu_button actions_menu')]"]))
         agent_engagement_dropdown_menu.click()
         if check_exists_by_xpath(agent_browser, "//div[contains(text(),'End engagement')]"):
-            agent_dropdown_menu_end_engagement = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(text(),'End engagement')]")))
+            agent_dropdown_menu_end_engagement = WebDriverWait(agent_browser, 30).until(
+                EC.element_to_be_clickable((By.XPATH, "//div[contains(text(),'End engagement')]")))
             agent_dropdown_menu_end_engagement.click()
             # agent_dropdown_menu_end_engagement_confirm_button = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class(),'lpview_okButton button dark_bg grey operative')]")))
             # agent_dropdown_menu_end_engagement_confirm_button = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class(),'lpview_okButton')]")))
@@ -103,7 +105,8 @@ def agent_close_existing_conversations(agent_browser):
 
 def agent_send_invite_message(agent_browser):
     print("Searching the SEND MESSAGE button")
-    if check_exists_by_xpath(agent_browser, 10, "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"):
+    if check_exists_by_xpath(agent_browser, 10,
+                             "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"):
         print("SEND MESSAGE button FOUND")
         print("Trying to click the SEND MESSAGE button...")
         try:
@@ -148,7 +151,7 @@ def agent_invite_visitor(agent_browser):
                                                                               "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
 
         print("Searching for 'Click invite to initialize a video call' string")
-        WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH,agent_iframe_xpath)))
+        WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
         if check_exists_by_xpath(agent_browser, 2,
                                  "//div[@id='pre-call']//h1[contains(text(),'Click invite to initialize a video call')]"):
             print("'Click invite to initialize a video call' FOUND")
@@ -303,7 +306,8 @@ def agent_reinvite_call(agent_browser):
     print("Agent: Sending the INVITE MESSAGE")
     agent_send_invite_message(agent_browser)
     print("Switching to Agent IFRAME")
-    agent_browser.switch_to_frame(WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
+    agent_browser.switch_to_frame(
+        WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
     print("Checking that the Agent END CALL button is PRESENT")
 
     if check_exists_by_xpath(agent_browser, 5, "//button[@id='call-btn']"):
@@ -313,7 +317,8 @@ def agent_reinvite_call(agent_browser):
         print("Trying to find the END CALL button for one more time...")
         try:
             agent_browser.switch_to.default_content()
-            agent_browser.switch_to_frame(WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
+            agent_browser.switch_to_frame(
+                WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
             WebDriverWait(agent_browser, timeout).until(
                 EC.element_to_be_clickable((By.XPATH, "//button[@id='call-btn']")))
         except:
@@ -423,7 +428,8 @@ def agent_mute_visitor_cam(agent_browser):
     if check_exists_by_xpath(agent_browser, 5, "//div[@id='hold-menu']//button[text()=\"Mute visitor's cam\"]"):
         print("Resuming the call...")
         WebDriverWait(agent_browser, timeout).until(
-            EC.presence_of_element_located((By.XPATH, "//div[@id='hold-menu']//button[text()=\"Mute visitor's cam\"]"))).click()
+            EC.presence_of_element_located(
+                (By.XPATH, "//div[@id='hold-menu']//button[text()=\"Mute visitor's cam\"]"))).click()
         # Checking that the call is really put on hold
         WebDriverWait(agent_browser, timeout).until(
             EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
@@ -438,7 +444,6 @@ def agent_mute_visitor_cam(agent_browser):
         print("The Visitor's CAM is ALREADY MUTED")
 
     agent_browser.switch_to_default_content()
-
 
 
 def visitor_open_chat(visitor_browser):
@@ -752,7 +757,7 @@ def agent_enable_audio(agent_browser):
     agent_browser.switch_to_default_content()
     print("Switching to Agent IFRAME")
     WebDriverWait(agent_browser, default_timeout).until(
-        EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+        EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
 
     if check_exists_by_xpath(agent_browser, default_timeout, active_video_button):
         print("Agent MICROPHONE BUTTON is already enabled")
@@ -780,7 +785,7 @@ def agent_disable_audio(agent_browser):
     agent_browser.switch_to_default_content()
     print("Switching to Agent IFRAME")
     WebDriverWait(agent_browser, default_timeout).until(
-        EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+        EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
 
     if check_exists_by_xpath(agent_browser, default_timeout, active_video_button):
         print("Checking that the Agent MICROPHONE BUTTON EXISTS and 'ENABLED'")
@@ -794,6 +799,30 @@ def agent_disable_audio(agent_browser):
             print("Exception: Agent 'ENABLED' MICROPHONE BUTTON NOT FOUND")
     else:
         print("Agent MICROPHONE BUTTON is already disabled")
+
+    print("Switching back to Agents DEFAULT CONTENT")
+    agent_browser.switch_to_default_content()
+
+
+def agent_download_diagnostic_reports(agent_browser):
+    diagnostic_reports_button = "pre-logs-button"
+    diagnostic_reports_title = "//a[contains(@title,'Download zip')]"
+
+    print("Switching to Agents DEFAULT CONTENT")
+    agent_browser.switch_to_default_content()
+    print("Switching to Agent IFRAME")
+    WebDriverWait(agent_browser, default_timeout).until(
+        EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+
+    print("Checking that the Agent REPORT BUTTON Exists")
+    if check_exists_by_xpath(agent_browser, default_timeout, diagnostic_reports_title):
+        try:
+            agent_browser.find_element(By.ID, diagnostic_reports_button).click()
+            print("Agent REPORT BUTTON has been clicked")
+        except:
+            print("Exception: Agent REPORT BUTTON NOT FOUND")
+    else:
+        print("Exception: Agent REPORT BUTTON NOT FOUND")
 
     print("Switching back to Agents DEFAULT CONTENT")
     agent_browser.switch_to_default_content()
@@ -842,6 +871,10 @@ while counter == 1:
         options.add_argument("--use-fake-ui-for-media-stream")
         options.add_argument("--mute-audio")
 
+        options.add_experimental_option("prefs", {'download.prompt_for_download': False,
+                                                  'directory_upgrade': True,
+                                                  'download.default_directory': 'D:/'})
+
         # print(options.to_capabilities()) --disable-web-security
         # agent_browser = webdriver.Remote(command_executor='http://127.0.0.1:4444/wd/hub', desired_capabilities=DesiredCapabilities.CHROME)
         # agent_browser = webdriver.Remote(command_executor='http://127.0.0.1:4444/wd/hub', desired_capabilities=options.to_capabilities())
@@ -853,6 +886,7 @@ while counter == 1:
         agent_browser.get('https://va-a.authentication.liveperson.net/')
         agent_browser.maximize_window()
         # agent_browser.implicitly_wait(30)
+        # agent_site_login(agent_browser, 'Agent3', 'Agent123', '54424706')  # VEL-QA
         agent_site_login(agent_browser, 'Agent2', 'Agent123', '54424706')  # VEL-QA
         # agent_site_login(agent_browser, 'Bohdan', 'Bohdan123', '57877913') # VEL
 
@@ -910,6 +944,8 @@ while counter == 1:
         agent_disable_audio(agent_browser)
 
         agent_enable_audio(agent_browser)
+
+        agent_download_diagnostic_reports(agent_browser)
 
         agent_invite_visitor(agent_browser)
 
@@ -972,7 +1008,6 @@ while counter == 1:
 
         agent_put_call_on_hold(agent_browser)
         time.sleep(1)
-        
 
         agent_resume_call(agent_browser)
         time.sleep(1)
