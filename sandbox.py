@@ -1,4 +1,4 @@
-'''
+"""
 Created on 6 апр. 2017 г.
 
 @author: pavlo.ivanov
@@ -6,7 +6,7 @@ Created on 6 апр. 2017 г.
 
 if __name__ == '__main__':
     pass
-'''
+"""
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -79,12 +79,10 @@ def agent_site_login(agent_browser, username, userpass, account_number):
 def agent_close_existing_conversations(agent_browser):
     while check_exists_by_xpath(agent_browser,
                                 "//div[contains(@class,'lpview_dropdown_menu_container lpview_dropdown_menu_button actions_menu')]"):
-        agent_engagement_dropdown_menu = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable([By.XPATH,
-                                                                                                            "//div[contains(@class,'lpview_dropdown_menu_container lpview_dropdown_menu_button actions_menu')]"]))
+        agent_engagement_dropdown_menu = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable([By.XPATH,"//div[contains(@class,'lpview_dropdown_menu_container lpview_dropdown_menu_button actions_menu')]"]))
         agent_engagement_dropdown_menu.click()
         if check_exists_by_xpath(agent_browser, "//div[contains(text(),'End engagement')]"):
-            agent_dropdown_menu_end_engagement = WebDriverWait(agent_browser, 30).until(
-                EC.element_to_be_clickable((By.XPATH, "//div[contains(text(),'End engagement')]")))
+            agent_dropdown_menu_end_engagement = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(text(),'End engagement')]")))
             agent_dropdown_menu_end_engagement.click()
             # agent_dropdown_menu_end_engagement_confirm_button = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class(),'lpview_okButton button dark_bg grey operative')]")))
             # agent_dropdown_menu_end_engagement_confirm_button = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class(),'lpview_okButton')]")))
@@ -105,8 +103,7 @@ def agent_close_existing_conversations(agent_browser):
 
 def agent_send_invite_message(agent_browser):
     print("Searching the SEND MESSAGE button")
-    if check_exists_by_xpath(agent_browser, 10,
-                             "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"):
+    if check_exists_by_xpath(agent_browser, 10, "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"):
         print("SEND MESSAGE button FOUND")
         print("Trying to click the SEND MESSAGE button...")
         try:
@@ -306,8 +303,7 @@ def agent_reinvite_call(agent_browser):
     print("Agent: Sending the INVITE MESSAGE")
     agent_send_invite_message(agent_browser)
     print("Switching to Agent IFRAME")
-    agent_browser.switch_to_frame(
-        WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
+    agent_browser.switch_to_frame(WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
     print("Checking that the Agent END CALL button is PRESENT")
 
     if check_exists_by_xpath(agent_browser, 5, "//button[@id='call-btn']"):
@@ -317,8 +313,7 @@ def agent_reinvite_call(agent_browser):
         print("Trying to find the END CALL button for one more time...")
         try:
             agent_browser.switch_to.default_content()
-            agent_browser.switch_to_frame(
-                WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
+            agent_browser.switch_to_frame(WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
             WebDriverWait(agent_browser, timeout).until(
                 EC.element_to_be_clickable((By.XPATH, "//button[@id='call-btn']")))
         except:
@@ -464,8 +459,7 @@ def agent_mute_visitor_cam(agent_browser):
     if check_exists_by_xpath(agent_browser, 5, "//div[@id='hold-menu']//button[text()=\"Mute visitor's cam\"]"):
         print("Resuming the call...")
         WebDriverWait(agent_browser, timeout).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//div[@id='hold-menu']//button[text()=\"Mute visitor's cam\"]"))).click()
+            EC.presence_of_element_located((By.XPATH, "//div[@id='hold-menu']//button[text()=\"Mute visitor's cam\"]"))).click()
         # Checking that the call is really put on hold
         WebDriverWait(agent_browser, timeout).until(
             EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
@@ -506,6 +500,15 @@ def agent_unmute_visitor_cam(agent_browser):
             EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
     else:
         print("The Visitor's CAM is ALREADY UNMUTED")
+    agent_browser.switch_to_default_content()
+
+
+def agent_click_menu_button(agent_browser):
+    print("Switching to IFrame")
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Clicking HAMBURGER (MENU) button")
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hamburger-btn')]"))).click()
+    print("Switching to Default Contents")
     agent_browser.switch_to_default_content()
 
 
@@ -1086,6 +1089,13 @@ while counter == 1:
 
         agent_unmute_visitor_mic(agent_browser)
         time.sleep(1)
+
+        agent_click_menu_button(agent_browser)
+        time.sleep(1)
+
+        agent_click_menu_button(agent_browser)
+
+
 
         """
         # Un-mute the camera on Agent side
