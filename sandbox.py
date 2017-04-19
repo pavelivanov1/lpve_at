@@ -521,6 +521,15 @@ def agent_click_settings_button(agent_browser):
     agent_browser.switch_to_default_content()
 
 
+def agent_click_done_in_settings(agent_browser):
+    print("Switching to IFrame")
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Clicking DONE button")
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'done-button')]"))).click()
+    print("Switching to Default Contents")
+    agent_browser.switch_to_default_content()
+
+
 
 def visitor_open_chat(visitor_browser):
     WebDriverWait(visitor_browser, timeout).until(
@@ -1105,7 +1114,8 @@ while counter == 1:
 
         agent_click_settings_button(agent_browser)
         time.sleep(1)
-        agent_click_settings_button(agent_browser)
+        agent_click_done_in_settings(agent_browser)
+        time.sleep(1)
 
 
 
