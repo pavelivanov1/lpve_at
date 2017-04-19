@@ -692,6 +692,62 @@ def agent_disable_video(agent_browser):
     agent_browser.switch_to_default_content()
 
 
+def agent_enable_audio(agent_browser):
+    active_video_button = "//button[contains(@class,'active') and contains(@id,'microphone-toggle-button')]"
+    microphone_toggle_button = 'microphone-toggle-button'
+    for_this_call_only = "//p[contains(@class,'text-muted')]"
+
+    print("Switching to Agents DEFAULT CONTENT")
+    agent_browser.switch_to_default_content()
+    print("Switching to Agent IFRAME")
+    WebDriverWait(agent_browser, default_timeout).until(
+        EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+
+    if check_exists_by_xpath(agent_browser, default_timeout, active_video_button):
+        print("Agent MICROPHONE BUTTON is already enabled")
+    else:
+        print("Checking that the Agent MICROPHONE BUTTON EXISTS and 'DISABLED'")
+        try:
+            agent_browser.find_element(By.ID, microphone_toggle_button).click()
+            print("Agent MICROPHONE BUTTON has been clicked")
+            # bug work-around
+            agent_browser.find_element(By.XPATH, for_this_call_only).click()
+            time.sleep(1)
+        except:
+            print("Exception: Agent 'DISABLED' MICROPHONE BUTTON NOT FOUND")
+
+    print("Switching back to Agents DEFAULT CONTENT")
+    agent_browser.switch_to_default_content()
+
+
+def agent_disable_audio(agent_browser):
+    active_video_button = "//button[contains(@class,'active') and contains(@id,'microphone-toggle-button')]"
+    microphone_toggle_button = 'microphone-toggle-button'
+    for_this_call_only = "//p[contains(@class,'text-muted')]"
+
+    print("Switching to Agents DEFAULT CONTENT")
+    agent_browser.switch_to_default_content()
+    print("Switching to Agent IFRAME")
+    WebDriverWait(agent_browser, default_timeout).until(
+        EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+
+    if check_exists_by_xpath(agent_browser, default_timeout, active_video_button):
+        print("Checking that the Agent MICROPHONE BUTTON EXISTS and 'ENABLED'")
+        try:
+            agent_browser.find_element(By.ID, microphone_toggle_button).click()
+            print("Agent MICROPHONE BUTTON has been clicked")
+            # bug work-around
+            agent_browser.find_element(By.XPATH, for_this_call_only).click()
+            time.sleep(1)
+        except:
+            print("Exception: Agent 'ENABLED' MICROPHONE BUTTON NOT FOUND")
+    else:
+        print("Agent MICROPHONE BUTTON is already disabled")
+
+    print("Switching back to Agents DEFAULT CONTENT")
+    agent_browser.switch_to_default_content()
+
+
 # Page Object ==========================================================================================================
 # <div id="VyIRojPtYS2w_renderer_vidyoRemoteName0" class="guest">demoUser_97567</div> # Counterparty name on the screen
 # <button id="joinLeaveButton" class="toolbarButton callStart" title="Join Conference"/> # Join Button 
@@ -718,7 +774,7 @@ def agent_disable_video(agent_browser):
 
 timeout = 30
 default_timeout = 10
-small_timeout = 5
+small_timeout = 2
 counter = 1
 
 iframe_xpath = "//div[contains(@class,'lpview_widget right_pane_widget_wrapper_iframe') and contains(@style,'display: block')]//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]"
@@ -796,6 +852,12 @@ while counter == 1:
         agent_disable_video(agent_browser)
 
         agent_enable_video(agent_browser)
+
+        agent_enable_audio(agent_browser)
+
+        agent_disable_audio(agent_browser)
+
+        agent_enable_audio(agent_browser)
 
         agent_invite_visitor(agent_browser)
 
