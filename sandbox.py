@@ -564,27 +564,81 @@ def agent_select_camera_in_dropdown_by_index(agent_browser, index):
     """
     print("Switching to IFrame")
     WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
-    print("Clicking DONE button")
+    print("Checking that CAMERA SELECTOR exists")
     select_option_xpath = "//select[contains(@id,'cameraSelect')]/option[" + str(index) + "]"
-    if check_exists_by_xpath(select_option_xpath):
-        WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'cameraSelect')]"))).selectByIndex(index)
-        print("SELECTED item "  + str(index) + " in Camera selector")
-        print("Switching to Default Contents")
-        agent_browser.switch_to_default_content()
+    #if check_exists_by_xpath("//select[contains(@id,'cameraSelect')]"):
+        #WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'cameraSelect')]"))).selectByIndex(index)
+    #WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'cameraSelect')]"))).selectByIndex(index)
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'cameraSelect')]"))).click()
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, select_option_xpath))).click()
+    print("SELECTED item "  + str(index) + " in Camera selector")
+    print("Switching to Default Contents")
+    agent_browser.switch_to_default_content()
+    """
         return True
     else:
         print("CANNOT select item " + str(index) + " in Camera SELECTOR")
         print("Switching to Default Contents")
         agent_browser.switch_to_default_content()
         return False
-
-
-
-
+    """
     print("Switching to Default Contents")
     agent_browser.switch_to_default_content()
 
 
+def agent_select_microphone_in_dropdown_by_index(agent_browser, index):
+    """
+    This function requires the Settings dialogue to be open by agent_click_settings_button()
+    :param agent_browser: Webdriver instance
+    :param index: 
+    :return: none 
+    """
+    print("Switching to IFrame")
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Checking that MICROPHONE SELECTOR exists")
+    select_option_xpath = "//select[contains(@id,'microphoneSelect')]/option[" + str(index) + "]"
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'microphoneSelect')]"))).click()
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, select_option_xpath))).click()
+    print("SELECTED item " + str(index) + " in MICROPHONE selector")
+    print("Switching to Default Contents")
+    agent_browser.switch_to_default_content()
+
+
+def agent_select_speaker_in_dropdown_by_index(agent_browser, index):
+    """
+    This function requires the Settings dialogue to be open by agent_click_settings_button()
+    :param agent_browser: Webdriver instance
+    :param index: 
+    :return: none 
+    """
+    print("Switching to IFrame")
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Checking that SPEAKER SELECTOR exists")
+    select_option_xpath = "//select[contains(@id,'speakerSelect')]/option[" + str(index) + "]"
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'speakerSelect')]"))).click()
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, select_option_xpath))).click()
+    print("SELECTED item " + str(index) + " in SPEAKER selector")
+    print("Switching to Default Contents")
+    agent_browser.switch_to_default_content()
+
+
+
+def agent_download_diagnostic_reports_from_incall_settings(agent_browser):
+    """
+    This function requires the Settings dialogue to be open by agent_click_settings_button()
+    :param agent_browser: 
+    :return: 
+    """
+    print("Downloading the DIAGNOSTICS from INCALL SETTINGS dialogue")
+    print("Switching to IFrame")
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Clicking the Download diagnostic reports button")
+
+    WebDriverWait(agent_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//div[@id='settings-content']//a[@id='settings-logs-button']"))).click()
+
+    print("Switching to Default Contents")
+    agent_browser.switch_to_default_content()
 
 
 def visitor_open_chat(visitor_browser):
@@ -945,7 +999,7 @@ def agent_disable_audio(agent_browser):
     agent_browser.switch_to_default_content()
 
 
-def agent_download_diagnostic_reports(agent_browser):
+def agent_download_diagnostic_reports_from_precall(agent_browser):
     diagnostic_reports_button = "pre-logs-button"
     diagnostic_reports_title = "//a[contains(@title,'Download zip')]"
 
@@ -1086,7 +1140,7 @@ while counter == 1:
 
         agent_enable_audio(agent_browser)
 
-        agent_download_diagnostic_reports(agent_browser)
+        agent_download_diagnostic_reports_from_precall(agent_browser)
 
         agent_invite_visitor(agent_browser)
 
@@ -1123,12 +1177,12 @@ while counter == 1:
         '''
 
         # id LPFRM_eb3f01-4a22-9d2e
-        visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(
+        visitor_browser.switch_to.frame(WebDriverWait(visitor_browser, 10).until(
             EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
         WebDriverWait(visitor_browser, timeout).until(
             EC.element_to_be_clickable((By.XPATH, "//button[contains(@id,'join-button')]"))).click()
-        visitor_browser.switch_to_default_content()
-        time.sleep(5)
+        visitor_browser.switch_to.default_content()
+        #time.sleep(5)
 
         visitor_mute_own_in_call_microphone(visitor_browser)
         visitor_mute_own_in_call_camera(visitor_browser)
@@ -1152,29 +1206,35 @@ while counter == 1:
         visitor_unmute_own_in_call_camera(visitor_browser)
 
         agent_put_call_on_hold(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
 
         agent_resume_call(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
 
         agent_mute_visitor_mic(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
 
         agent_mute_visitor_cam(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
 
         agent_unmute_visitor_cam(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
 
         agent_unmute_visitor_mic(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
 
         agent_click_menu_button(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
 
         agent_click_settings_button(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
         agent_select_camera_in_dropdown_by_index(agent_browser, 1)
+        time.sleep(1)
+        agent_select_microphone_in_dropdown_by_index(agent_browser, 1)
+        time.sleep(1)
+        agent_select_speaker_in_dropdown_by_index(agent_browser, 1)
+        time.sleep(1)
+        agent_download_diagnostic_reports_from_incall_settings(agent_browser)
         time.sleep(1)
         agent_click_done_in_settings(agent_browser)
         time.sleep(1)
