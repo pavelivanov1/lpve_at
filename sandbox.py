@@ -777,7 +777,7 @@ def agent_enable_video(agent_browser):
     WebDriverWait(agent_browser, default_timeout).until(
         EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
 
-    if check_exists_by_xpath(agent_browser, default_timeout, active_video_button):
+    if check_exists_by_xpath(agent_browser, small_timeout, active_video_button):
         print("Agent VIDEO BUTTON is already enabled")
     else:
         print("Checking that the Agent VIDEO BUTTON EXISTS and 'DISABLED'")
@@ -805,7 +805,7 @@ def agent_disable_video(agent_browser):
     WebDriverWait(agent_browser, default_timeout).until(
         EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
 
-    if check_exists_by_xpath(agent_browser, default_timeout, active_video_button):
+    if check_exists_by_xpath(agent_browser, small_timeout, active_video_button):
         print("Checking that the Agent VIDEO BUTTON EXISTS and 'ENABLED'")
         try:
             agent_browser.find_element(By.ID, video_toggle_button).click()
@@ -833,7 +833,7 @@ def agent_enable_audio(agent_browser):
     WebDriverWait(agent_browser, default_timeout).until(
         EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
 
-    if check_exists_by_xpath(agent_browser, default_timeout, active_video_button):
+    if check_exists_by_xpath(agent_browser, small_timeout, active_video_button):
         print("Agent MICROPHONE BUTTON is already enabled")
     else:
         print("Checking that the Agent MICROPHONE BUTTON EXISTS and 'DISABLED'")
@@ -861,7 +861,7 @@ def agent_disable_audio(agent_browser):
     WebDriverWait(agent_browser, default_timeout).until(
         EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
 
-    if check_exists_by_xpath(agent_browser, default_timeout, active_video_button):
+    if check_exists_by_xpath(agent_browser, small_timeout, active_video_button):
         print("Checking that the Agent MICROPHONE BUTTON EXISTS and 'ENABLED'")
         try:
             agent_browser.find_element(By.ID, microphone_toggle_button).click()
@@ -943,6 +943,7 @@ def agent_get_invitation_link(agent_browser):
 
     print("Switching back to Agents DEFAULT CONTENT")
     agent_browser.switch_to_default_content()
+
 
 # Page Object ==========================================================================================================
 # <div id="VyIRojPtYS2w_renderer_vidyoRemoteName0" class="guest">demoUser_97567</div> # Counterparty name on the screen
