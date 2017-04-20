@@ -79,12 +79,10 @@ def agent_site_login(agent_browser, username, userpass, account_number):
 def agent_close_existing_conversations(agent_browser):
     while check_exists_by_xpath(agent_browser,
                                 "//div[contains(@class,'lpview_dropdown_menu_container lpview_dropdown_menu_button actions_menu')]"):
-        agent_engagement_dropdown_menu = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable([By.XPATH,
-                                                                                                            "//div[contains(@class,'lpview_dropdown_menu_container lpview_dropdown_menu_button actions_menu')]"]))
+        agent_engagement_dropdown_menu = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable([By.XPATH,"//div[contains(@class,'lpview_dropdown_menu_container lpview_dropdown_menu_button actions_menu')]"]))
         agent_engagement_dropdown_menu.click()
         if check_exists_by_xpath(agent_browser, "//div[contains(text(),'End engagement')]"):
-            agent_dropdown_menu_end_engagement = WebDriverWait(agent_browser, 30).until(
-                EC.element_to_be_clickable((By.XPATH, "//div[contains(text(),'End engagement')]")))
+            agent_dropdown_menu_end_engagement = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(text(),'End engagement')]")))
             agent_dropdown_menu_end_engagement.click()
             # agent_dropdown_menu_end_engagement_confirm_button = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class(),'lpview_okButton button dark_bg grey operative')]")))
             # agent_dropdown_menu_end_engagement_confirm_button = WebDriverWait(agent_browser, 30).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class(),'lpview_okButton')]")))
@@ -103,10 +101,24 @@ def agent_close_existing_conversations(agent_browser):
         print("Conversation control drop-down not found")
 
 
+def agent_cancel_vidyo_invitation(agent_browser):
+    """
+    This function requires the INVITE button to be pressed in IFrame 
+    This function requires the Driver to be in Default Content
+    :param agent_browser: Webdriver instance
+    :return: none
+    """
+    print("Switching to IFrame")
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Clicking CANCEL invitation button")
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@id='pre-call-confirm']//button[contains(text(),'Cancel')]"))).click()
+    print("Switching to Default Contents")
+    agent_browser.switch_to_default_content()
+
+
 def agent_send_invite_message(agent_browser):
     print("Searching the SEND MESSAGE button")
-    if check_exists_by_xpath(agent_browser, 10,
-                             "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"):
+    if check_exists_by_xpath(agent_browser, 10, "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"):
         print("SEND MESSAGE button FOUND")
         print("Trying to click the SEND MESSAGE button...")
         try:
@@ -306,8 +318,7 @@ def agent_reinvite_call(agent_browser):
     print("Agent: Sending the INVITE MESSAGE")
     agent_send_invite_message(agent_browser)
     print("Switching to Agent IFRAME")
-    agent_browser.switch_to_frame(
-        WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
+    agent_browser.switch_to_frame(WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
     print("Checking that the Agent END CALL button is PRESENT")
 
     if check_exists_by_xpath(agent_browser, 5, "//button[@id='call-btn']"):
@@ -317,8 +328,7 @@ def agent_reinvite_call(agent_browser):
         print("Trying to find the END CALL button for one more time...")
         try:
             agent_browser.switch_to.default_content()
-            agent_browser.switch_to_frame(
-                WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
+            agent_browser.switch_to_frame(WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
             WebDriverWait(agent_browser, timeout).until(
                 EC.element_to_be_clickable((By.XPATH, "//button[@id='call-btn']")))
         except:
@@ -464,8 +474,7 @@ def agent_mute_visitor_cam(agent_browser):
     if check_exists_by_xpath(agent_browser, 5, "//div[@id='hold-menu']//button[text()=\"Mute visitor's cam\"]"):
         print("Resuming the call...")
         WebDriverWait(agent_browser, timeout).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//div[@id='hold-menu']//button[text()=\"Mute visitor's cam\"]"))).click()
+            EC.presence_of_element_located((By.XPATH, "//div[@id='hold-menu']//button[text()=\"Mute visitor's cam\"]"))).click()
         # Checking that the call is really put on hold
         WebDriverWait(agent_browser, timeout).until(
             EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
@@ -492,8 +501,7 @@ def agent_unmute_visitor_cam(agent_browser):
     if check_exists_by_xpath(agent_browser, 5, "//div[@id='hold-menu']//button[text()=\"Unmute visitor's cam\"]"):
         print("Resuming the VISITOR's CAMERA...")
         WebDriverWait(agent_browser, timeout).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//div[@id='hold-menu']//button[text()=\"Unmute visitor's cam\"]"))).click()
+            EC.presence_of_element_located((By.XPATH, "//div[@id='hold-menu']//button[text()=\"Unmute visitor's cam\"]"))).click()
         # Checking that the call is really put on hold
         WebDriverWait(agent_browser, timeout).until(
             EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hold-btn')]"))).click()
@@ -514,8 +522,131 @@ def agent_click_menu_button(agent_browser):
     print("Switching to IFrame")
     WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
     print("Clicking HAMBURGER (MENU) button")
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hamburger-btn')]"))).click()
+    print("Switching to Default Contents")
+    agent_browser.switch_to_default_content()
+
+
+def agent_click_settings_button(agent_browser):
+    """
+    This function requires the menu to be open by agent_click_menu_button()
+    :param agent_browser: Webdriver instance
+    :return: none
+    """
+    print("Switching to IFrame")
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Clicking SETTINGS button")
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'settings-button')]"))).click()
+    print("Switching to Default Contents")
+    agent_browser.switch_to_default_content()
+
+
+def agent_click_done_in_settings(agent_browser):
+    """
+    This function requires the Settings dialogue to be open by agent_click_settings_button() 
+    :param agent_browser: Webdriver instance
+    :return: none
+    """
+    print("Switching to IFrame")
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Clicking DONE button")
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'done-button')]"))).click()
+    print("Switching to Default Contents")
+    agent_browser.switch_to_default_content()
+
+
+def agent_select_camera_in_dropdown_by_index(agent_browser, index):
+    """
+    This function requires the Settings dialogue to be open by agent_click_settings_button()
+    :param agent_browser: Webdriver instance
+    :param index: 
+    :return: True if item exists and selected, False otherwise 
+    """
+    print("Switching to IFrame")
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Checking that CAMERA SELECTOR exists")
+    select_option_xpath = "//select[contains(@id,'cameraSelect')]/option[" + str(index) + "]"
+    #if check_exists_by_xpath("//select[contains(@id,'cameraSelect')]"):
+        #WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'cameraSelect')]"))).selectByIndex(index)
+    #WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'cameraSelect')]"))).selectByIndex(index)
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'cameraSelect')]"))).click()
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, select_option_xpath))).click()
+    print("SELECTED item "  + str(index) + " in Camera selector")
+    print("Switching to Default Contents")
+    agent_browser.switch_to_default_content()
+
+
+
+def agent_select_microphone_in_dropdown_by_index(agent_browser, index):
+    """
+    This function requires the Settings dialogue to be open by agent_click_settings_button()
+    :param agent_browser: Webdriver instance
+    :param index: 
+    :return: none 
+    """
+    print("Switching to IFrame")
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Checking that MICROPHONE SELECTOR exists")
+    select_option_xpath = "//select[contains(@id,'microphoneSelect')]/option[" + str(index) + "]"
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'microphoneSelect')]"))).click()
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, select_option_xpath))).click()
+    print("SELECTED item " + str(index) + " in MICROPHONE selector")
+    print("Switching to Default Contents")
+    agent_browser.switch_to_default_content()
+
+
+def agent_select_speaker_in_dropdown_by_index(agent_browser, index):
+    """
+    This function requires the Settings dialogue to be open by agent_click_settings_button()
+    :param agent_browser: Webdriver instance
+    :param index: 
+    :return: none 
+    """
+    print("Switching to IFrame")
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Checking that SPEAKER SELECTOR exists")
+    select_option_xpath = "//select[contains(@id,'speakerSelect')]/option[" + str(index) + "]"
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'speakerSelect')]"))).click()
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, select_option_xpath))).click()
+    print("SELECTED item " + str(index) + " in SPEAKER selector")
+    print("Switching to Default Contents")
+    agent_browser.switch_to_default_content()
+
+
+
+def agent_download_diagnostic_reports_from_incall_settings(agent_browser):
+    """
+    This function requires the Settings dialogue to be open by agent_click_settings_button()
+    :param agent_browser: 
+    :return: 
+    """
+    print("Downloading the DIAGNOSTICS from INCALL SETTINGS dialogue")
+    print("Switching to IFrame")
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Clicking the Download diagnostic reports button")
+
     WebDriverWait(agent_browser, timeout).until(
-        EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'hamburger-btn')]"))).click()
+        EC.presence_of_element_located((By.XPATH, "//div[@id='settings-content']//a[@id='settings-logs-button']"))).click()
+
+    print("Switching to Default Contents")
+    agent_browser.switch_to_default_content()
+
+
+
+def agent_download_diagnostic_reports_from_postcall_settings(agent_browser):
+    """
+    This function requires the Settings dialogue to be open by agent_click_settings_button()
+    :param agent_browser: 
+    :return: 
+    """
+    print("Downloading the DIAGNOSTICS from INCALL SETTINGS dialogue")
+    print("Switching to IFrame")
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Clicking the Download diagnostic reports button")
+
+    WebDriverWait(agent_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//div[@id='post-call']//a[@id='post-logs-button']"))).click()
+
     print("Switching to Default Contents")
     agent_browser.switch_to_default_content()
 
@@ -746,8 +877,7 @@ def visitor_rejoin_call(visitor_browser):
         except:
             print("Exception: Visitor REJOIN button NOT FOUND")
             print("Trying click Visitor REJOIN button for one more time....")
-            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
-                                                                                      "//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]"))).click()
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,"//div[@id='post-call']/div[contains(@id,'post-call-content')]//button[contains(@id,'rejoin-call-btn')]"))).click()
     else:
         print("Visitor REJOIN button NOT FOUND")
     # Checking that Visitor REJOINED the call (END CALL button present)
@@ -758,12 +888,105 @@ def visitor_rejoin_call(visitor_browser):
         print("Visitor could not REJOIN the call, END CALL button NOT FOUND")
         print("Trying to find the END CALL button for one more time...")
         try:
-            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,
-                                                                                      "//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]")))
+            WebDriverWait(visitor_browser, timeout).until(EC.element_to_be_clickable((By.XPATH,"//div[@id='bottom-control-bar']//button[contains(@id,'call-btn')]/i[contains(@class,'lpicon-phone')]")))
         except:
             print("Visitor END CALL button NOT FOUND after REJOIN after 2 search attempts")
     print("Switching back to Visitor DEFAULT CONTENT")
     visitor_browser.switch_to_default_content()
+
+
+def visitor_click_done_in_settings(visitor_browser):
+    """
+    This function requires the Settings dialogue to be open by visitor_click_settings_button() 
+    :param visitor_browser: Webdriver instance
+    :return: none
+    """
+    print("Switching to IFrame")
+    WebDriverWait(visitor_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, visitor_iframe_xpath)))
+    print("Clicking DONE button")
+    WebDriverWait(visitor_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//button[contains(text(),'Done')]"))).click()
+    print("Switching to Default Contents")
+    visitor_browser.switch_to_default_content()
+
+
+
+def visitor_click_settings_button(visitor_browser):
+
+
+    """
+    This function requires the menu to be open by visitor_click_menu_button()
+    :param visitor_browser: Webdriver instance
+    :return: none
+    """
+    print("Switching to IFrame")
+    WebDriverWait(visitor_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, visitor_iframe_xpath)))
+    print("Clicking SETTINGS button")
+    WebDriverWait(visitor_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'settings-button')]"))).click()
+    print("Switching to Default Contents")
+    visitor_browser.switch_to_default_content()
+
+
+def visitor_select_camera_in_dropdown_by_index(visitor_browser, index):
+
+
+    """
+    This function requires the Settings dialogue to be open by visitor_click_settings_button()
+    :param visitor_browser: Webdriver instance
+    :param index: 
+    :return: True if item exists and selected, False otherwise 
+    """
+    print("Switching to IFrame")
+    WebDriverWait(visitor_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, visitor_iframe_xpath)))
+    print("Checking that CAMERA SELECTOR exists")
+    select_option_xpath = "//select[contains(@id,'cameraSelect')]/option[" + str(index) + "]"
+    # if check_exists_by_xpath("//select[contains(@id,'cameraSelect')]"):
+    # WebDriverWait(visitor_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'cameraSelect')]"))).selectByIndex(index)
+    # WebDriverWait(visitor_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'cameraSelect')]"))).selectByIndex(index)
+    WebDriverWait(visitor_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'cameraSelect')]"))).click()
+    WebDriverWait(visitor_browser, timeout).until(EC.presence_of_element_located((By.XPATH, select_option_xpath))).click()
+    print("SELECTED item " + str(index) + " in Camera selector")
+    print("Switching to Default Contents")
+    visitor_browser.switch_to_default_content()
+
+
+def visitor_select_microphone_in_dropdown_by_index(visitor_browser, index):
+    """
+    This function requires the Settings dialogue to be open by visitor_click_settings_button()
+    :param visitor_browser: Webdriver instance
+    :param index: 
+    :return: none 
+    """
+    print("Switching to IFrame")
+    WebDriverWait(visitor_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, visitor_iframe_xpath)))
+    print("Checking that MICROPHONE SELECTOR exists")
+    select_option_xpath = "//select[contains(@id,'microphoneSelect')]/option[" + str(index) + "]"
+    WebDriverWait(visitor_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'microphoneSelect')]"))).click()
+    WebDriverWait(visitor_browser, timeout).until(EC.presence_of_element_located((By.XPATH, select_option_xpath))).click()
+    print("SELECTED item " + str(index) + " in MICROPHONE selector")
+    print("Switching to Default Contents")
+    visitor_browser.switch_to_default_content()
+
+
+def visitor_select_speaker_in_dropdown_by_index(visitor_browser, index):
+    """
+    This function requires the Settings dialogue to be open by visitor_click_settings_button()
+    :param visitor_browser: Webdriver instance
+    :param index: 
+    :return: none 
+    """
+    print("Switching to IFrame")
+    WebDriverWait(visitor_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, visitor_iframe_xpath)))
+    print("Checking that SPEAKER SELECTOR exists")
+    select_option_xpath = "//select[contains(@id,'speakerSelect')]/option[" + str(index) + "]"
+    WebDriverWait(visitor_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'speakerSelect')]"))).click()
+    WebDriverWait(visitor_browser, timeout).until(EC.presence_of_element_located((By.XPATH, select_option_xpath))).click()
+    print("SELECTED item " + str(index) + " in SPEAKER selector")
+    print("Switching to Default Contents")
+    visitor_browser.switch_to_default_content()
+
 
 
 def agent_enable_video(agent_browser):
@@ -789,7 +1012,6 @@ def agent_enable_video(agent_browser):
             time.sleep(1)
         except:
             print("Exception: Agent 'DISABLED' VIDEO BUTTON NOT FOUND")
-
     print("Switching back to Agents DEFAULT CONTENT")
     agent_browser.switch_to_default_content()
 
@@ -878,7 +1100,7 @@ def agent_disable_audio(agent_browser):
     agent_browser.switch_to_default_content()
 
 
-def agent_download_diagnostic_reports(agent_browser):
+def agent_download_diagnostic_reports_from_precall(agent_browser):
     diagnostic_reports_button = "pre-logs-button"
     diagnostic_reports_title = "//a[contains(@title,'Download zip')]"
 
@@ -900,6 +1122,104 @@ def agent_download_diagnostic_reports(agent_browser):
 
     print("Switching back to Agents DEFAULT CONTENT")
     agent_browser.switch_to_default_content()
+
+
+
+def guest_join_call(guest_browser):
+    """
+    
+    :param guest_browser: 
+    :return: 
+    """
+    print("Guest joins the call...")
+    WebDriverWait(guest_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@id='guest-join']//input"))).send_keys("LP_Guest")
+    WebDriverWait(guest_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'join-button')]"))).click()
+
+
+
+def guest_click_done_in_settings(guest_browser):
+    """
+    This function requires the Settings dialogue to be open by guest_click_settings_button() 
+    :param guest_browser: Webdriver instance
+    :return: none
+    """
+    print("Clicking Guest DONE button")
+    WebDriverWait(guest_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//button[contains(text(),'Done')]"))).click()
+
+
+
+
+def guest_click_settings_button(guest_browser):
+
+
+    """
+    This function requires the menu to be open by guest_click_menu_button()
+    :param guest_browser: Webdriver instance
+    :return: none
+    """
+    print("Clicking Guest SETTINGS button")
+    WebDriverWait(guest_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'settings-button')]"))).click()
+
+
+
+def guest_select_camera_in_dropdown_by_index(guest_browser, index):
+
+
+    """
+    This function requires the Settings dialogue to be open by guest_click_settings_button()
+    :param guest_browser: Webdriver instance
+    :param index: 
+    :return: True if item exists and selected, False otherwise 
+    """
+    print("Checking that Guest CAMERA SELECTOR exists")
+    select_option_xpath = "//select[contains(@id,'cameraSelect')]/option[" + str(index) + "]"
+    WebDriverWait(guest_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'cameraSelect')]"))).click()
+    WebDriverWait(guest_browser, timeout).until(EC.presence_of_element_located((By.XPATH, select_option_xpath))).click()
+    print("SELECTED item " + str(index) + " in Camera selector")
+
+
+
+def guest_select_microphone_in_dropdown_by_index(guest_browser, index):
+    """
+    This function requires the Settings dialogue to be open by guest_click_settings_button()
+    :param guest_browser: Webdriver instance
+    :param index: 
+    :return: none 
+    """
+    print("Checking that Guest MICROPHONE SELECTOR exists")
+    select_option_xpath = "//select[contains(@id,'microphoneSelect')]/option[" + str(index) + "]"
+    WebDriverWait(guest_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'microphoneSelect')]"))).click()
+    WebDriverWait(guest_browser, timeout).until(EC.presence_of_element_located((By.XPATH, select_option_xpath))).click()
+    print("SELECTED item " + str(index) + " in MICROPHONE selector")
+
+
+
+def guest_select_speaker_in_dropdown_by_index(guest_browser, index):
+    """
+    This function requires the Settings dialogue to be open by guest_click_settings_button()
+    :param guest_browser: Webdriver instance
+    :param index: 
+    :return: none 
+    """
+    print("Checking that Guest SPEAKER SELECTOR exists")
+    select_option_xpath = "//select[contains(@id,'speakerSelect')]/option[" + str(index) + "]"
+    WebDriverWait(guest_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'speakerSelect')]"))).click()
+    WebDriverWait(guest_browser, timeout).until(EC.presence_of_element_located((By.XPATH, select_option_xpath))).click()
+    print("SELECTED item " + str(index) + " in SPEAKER selector")
+
+
+
+def guest_end_call(guest_browser):
+
+
+    """
+    This function requires the menu to be open by guest_click_menu_button()
+    :param guest_browser: Webdriver instance
+    :return: none
+    """
+    print("Clicking Guest END CALL button")
+    WebDriverWait(guest_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'call-btn')]"))).click()
+
 
 
 def agent_get_invitation_link(agent_browser):
@@ -1005,8 +1325,8 @@ while counter == 1:
         agent_browser.get('https://va-a.authentication.liveperson.net/')
         agent_browser.maximize_window()
         # agent_browser.implicitly_wait(30)
-        agent_site_login(agent_browser, 'Agent3', 'Agent123', '54424706')  # VEL-QA
-        # agent_site_login(agent_browser, 'Agent2', 'Agent123', '54424706')  # VEL-QA
+        # agent_site_login(agent_browser, 'Agent3', 'Agent123', '54424706')  # VEL-QA
+        agent_site_login(agent_browser, 'Agent2', 'Agent123', '54424706')  # VEL-QA
         # agent_site_login(agent_browser, 'Bohdan', 'Bohdan123', '57877913') # VEL
 
         """
@@ -1064,7 +1384,11 @@ while counter == 1:
 
         agent_enable_audio(agent_browser)
 
-        agent_download_diagnostic_reports(agent_browser)
+        agent_download_diagnostic_reports_from_precall(agent_browser)
+
+        agent_invite_visitor(agent_browser)
+
+        agent_cancel_vidyo_invitation(agent_browser)
 
         agent_invite_visitor(agent_browser)
 
@@ -1097,12 +1421,12 @@ while counter == 1:
         '''
 
         # id LPFRM_eb3f01-4a22-9d2e
-        visitor_browser.switch_to_frame(WebDriverWait(visitor_browser, 10).until(
+        visitor_browser.switch_to.frame(WebDriverWait(visitor_browser, 10).until(
             EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
         WebDriverWait(visitor_browser, timeout).until(
             EC.element_to_be_clickable((By.XPATH, "//button[contains(@id,'join-button')]"))).click()
-        visitor_browser.switch_to_default_content()
-        time.sleep(5)
+        visitor_browser.switch_to.default_content()
+        #time.sleep(5)
 
         visitor_mute_own_in_call_microphone(visitor_browser)
         visitor_mute_own_in_call_camera(visitor_browser)
@@ -1126,24 +1450,37 @@ while counter == 1:
         visitor_unmute_own_in_call_camera(visitor_browser)
 
         agent_put_call_on_hold(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
 
         agent_resume_call(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
 
         agent_mute_visitor_mic(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
 
         agent_mute_visitor_cam(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
 
         agent_unmute_visitor_cam(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
 
         agent_unmute_visitor_mic(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
 
         agent_click_menu_button(agent_browser)
+        #time.sleep(1)
+
+        agent_click_settings_button(agent_browser)
+        #time.sleep(1)
+        agent_select_camera_in_dropdown_by_index(agent_browser, 1)
+        time.sleep(1)
+        agent_select_microphone_in_dropdown_by_index(agent_browser, 1)
+        time.sleep(1)
+        agent_select_speaker_in_dropdown_by_index(agent_browser, 1)
+        time.sleep(1)
+        agent_download_diagnostic_reports_from_incall_settings(agent_browser)
+        time.sleep(1)
+        agent_click_done_in_settings(agent_browser)
         time.sleep(1)
 
         agent_get_invitation_link(agent_browser)
@@ -1180,6 +1517,12 @@ while counter == 1:
         # ReJoin the call at the Visitor side
         visitor_rejoin_call(visitor_browser)
 
+        visitor_click_settings_button(visitor_browser)
+        visitor_select_camera_in_dropdown_by_index(visitor_browser, 1)
+        visitor_select_microphone_in_dropdown_by_index(visitor_browser, 1)
+        visitor_select_speaker_in_dropdown_by_index(visitor_browser, 1)
+        visitor_click_done_in_settings(visitor_browser)
+
         # End the call at the Agent side
         agent_browser.execute_script("$('.iframeElement').contents().find('#call-btn').click()")
         print("Clicked on Agent END CALL button")
@@ -1188,14 +1531,23 @@ while counter == 1:
         print("Agent: RE-INVITING...")
         agent_reinvite_call(agent_browser)
         time.sleep(5)
-        # WebDriverWait(agent_browser, 10).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
 
-        # <button id="refresh-btn" class="btn btn-success btn-lg">Refresh</button>
+        """
+        guest_join_call(guest_browser)
+        guest_click_done_in_settings(guest_browser)
+        guest_click_settings_button(guest_browser)
+        guest_select_camera_in_dropdown_by_index(guest_browser, 1)
+        guest_select_microphone_in_dropdown_by_index(guest_browser, 1)
+        guest_select_speaker_in_dropdown_by_index(guest_browser, 1)
+        guest_end_call(guest_browser)
+        """
 
-        # <div id="ended"><div class="vertical-center"><h1>This chat has ended.</h1></div><a class="btn btn-large btn-success has-spinner " title="Download zip" id="pre-logs-button"><span class="spinner"><div class="icon-spin"></div></span><!-- react-text: 39 -->Diagnostic reports<!-- /react-text --></a></div>
         print("Agent: ENDING THE CALL...")
         agent_end_call(agent_browser)
+        agent_download_diagnostic_reports_from_postcall_settings(agent_browser)
         time.sleep(5)
+
+        print("\n\nAll tests are DONE\n\n")
 
 
 
