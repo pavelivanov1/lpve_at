@@ -101,6 +101,21 @@ def agent_close_existing_conversations(agent_browser):
         print("Conversation control drop-down not found")
 
 
+def agent_cancel_vidyo_invitation(agent_browser):
+    """
+    This function requires the INVITE button to be pressed in IFrame 
+    This function requires the Driver to be in Default Content
+    :param agent_browser: Webdriver instance
+    :return: none
+    """
+    print("Switching to IFrame")
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Clicking CANCEL invitation button")
+    WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@id='pre-call-confirm']//button[contains(text(),'Cancel')]"))).click()
+    print("Switching to Default Contents")
+    agent_browser.switch_to_default_content()
+
+
 def agent_send_invite_message(agent_browser):
     print("Searching the SEND MESSAGE button")
     if check_exists_by_xpath(agent_browser, 10, "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"):
@@ -513,6 +528,11 @@ def agent_click_menu_button(agent_browser):
 
 
 def agent_click_settings_button(agent_browser):
+    """
+    This function requires the menu to be open by agent_click_menu_button()
+    :param agent_browser: Webdriver instance
+    :return: none
+    """
     print("Switching to IFrame")
     WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
     print("Clicking SETTINGS button")
@@ -522,12 +542,48 @@ def agent_click_settings_button(agent_browser):
 
 
 def agent_click_done_in_settings(agent_browser):
+    """
+    This function requires the Settings dialogue to be open by agent_click_settings_button() 
+    :param agent_browser: Webdriver instance
+    :return: none
+    """
     print("Switching to IFrame")
     WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
     print("Clicking DONE button")
     WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'done-button')]"))).click()
     print("Switching to Default Contents")
     agent_browser.switch_to_default_content()
+
+
+def agent_select_camera_in_dropdown_by_index(agent_browser, index):
+    """
+    This function requires the Settings dialogue to be open by agent_click_settings_button()
+    :param agent_browser: Webdriver instance
+    :param index: 
+    :return: True if item exists and selected, False otherwise 
+    """
+    print("Switching to IFrame")
+    WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+    print("Clicking DONE button")
+    select_option_xpath = "//select[contains(@id,'cameraSelect')]/option[" + str(index) + "]"
+    if check_exists_by_xpath(select_option_xpath):
+        WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'cameraSelect')]"))).selectByIndex(index)
+        print("SELECTED item "  + str(index) + " in Camera selector")
+        print("Switching to Default Contents")
+        agent_browser.switch_to_default_content()
+        return True
+    else:
+        print("CANNOT select item " + str(index) + " in Camera SELECTOR")
+        print("Switching to Default Contents")
+        agent_browser.switch_to_default_content()
+        return False
+
+
+
+
+    print("Switching to Default Contents")
+    agent_browser.switch_to_default_content()
+
 
 
 
@@ -1034,6 +1090,10 @@ while counter == 1:
 
         agent_invite_visitor(agent_browser)
 
+        agent_cancel_vidyo_invitation(agent_browser)
+
+        agent_invite_visitor(agent_browser)
+
         # Mute camera id="video-toggle-button"
         # Agent, Before call
         # agent_browser.execute_script("$('.iframeElement').contents().find('#video-toggle-button').click()")
@@ -1113,6 +1173,8 @@ while counter == 1:
         time.sleep(1)
 
         agent_click_settings_button(agent_browser)
+        time.sleep(1)
+        agent_select_camera_in_dropdown_by_index(agent_browser, 1)
         time.sleep(1)
         agent_click_done_in_settings(agent_browser)
         time.sleep(1)
