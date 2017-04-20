@@ -571,7 +571,7 @@ def agent_select_camera_in_dropdown_by_index(agent_browser, index):
     #WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'cameraSelect')]"))).selectByIndex(index)
     WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'cameraSelect')]"))).click()
     WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, select_option_xpath))).click()
-    print("SELECTED item "  + str(index) + " in Camera selector")
+    print("SELECTED item " + str(index) + " in Camera selector")
     print("Switching to Default Contents")
     agent_browser.switch_to_default_content()
 
@@ -1325,8 +1325,8 @@ while counter == 1:
         agent_browser.get('https://va-a.authentication.liveperson.net/')
         agent_browser.maximize_window()
         # agent_browser.implicitly_wait(30)
-        # agent_site_login(agent_browser, 'Agent3', 'Agent123', '54424706')  # VEL-QA
-        agent_site_login(agent_browser, 'Agent2', 'Agent123', '54424706')  # VEL-QA
+        agent_site_login(agent_browser, 'Agent3', 'Agent123', '54424706')  # VEL-QA
+        # agent_site_login(agent_browser, 'Agent2', 'Agent123', '54424706')  # VEL-QA
         # agent_site_login(agent_browser, 'Bohdan', 'Bohdan123', '57877913') # VEL
 
         """
@@ -1468,10 +1468,11 @@ while counter == 1:
         #time.sleep(1)
 
         agent_click_menu_button(agent_browser)
-        #time.sleep(1)
+        time.sleep(1)
 
         agent_click_settings_button(agent_browser)
-        #time.sleep(1)
+        time.sleep(1)
+
         agent_select_camera_in_dropdown_by_index(agent_browser, 1)
         time.sleep(1)
         agent_select_microphone_in_dropdown_by_index(agent_browser, 1)
@@ -1484,10 +1485,6 @@ while counter == 1:
         time.sleep(1)
 
         agent_get_invitation_link(agent_browser)
-
-        guest_browser = webdriver.Chrome(chrome_options=options)
-        guest_browser.get(guest_link)
-        time.sleep(1)
 
         agent_click_menu_button(agent_browser)
 
@@ -1532,15 +1529,16 @@ while counter == 1:
         agent_reinvite_call(agent_browser)
         time.sleep(5)
 
-        """
+        guest_browser = webdriver.Chrome(chrome_options=options)
+        guest_browser.get(guest_link)
+        time.sleep(1)
         guest_join_call(guest_browser)
-        guest_click_done_in_settings(guest_browser)
         guest_click_settings_button(guest_browser)
         guest_select_camera_in_dropdown_by_index(guest_browser, 1)
         guest_select_microphone_in_dropdown_by_index(guest_browser, 1)
         guest_select_speaker_in_dropdown_by_index(guest_browser, 1)
+        guest_click_done_in_settings(guest_browser)
         guest_end_call(guest_browser)
-        """
 
         print("Agent: ENDING THE CALL...")
         agent_end_call(agent_browser)
@@ -1549,16 +1547,14 @@ while counter == 1:
 
         print("\n\nAll tests are DONE\n\n")
 
-
-
-    except StaleElementReferenceException:
+    except StaleElementReferenceException as ex:
         print("StaleElementReferenceException exception: " + str(ex))
         pass
     except TimeoutException as ex:
         print("TimeOut exception in MAIN FLOW: " + str(ex))
         pass
-    except:
-        print("Unknown exception")
+    except Exception as ex:
+        print("Unknown exception: " + str(ex))
         pass
     finally:
         # time.sleep(10)
