@@ -238,29 +238,49 @@ def agent_end_call(agent_browser):
 
 def agent_mute_own_in_call_camera(agent_browser):
     print("Muting the Agent CAMERA")
-    agent_browser.execute_script("$('.iframeElement').contents().find('#video-btn').click()")
+    agent_browser.switch_to_frame(
+        WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
+    WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH,
+                                                                          "//button[contains(@id,'video-btn')]"))).click()
+    #agent_browser.execute_script("$('.iframeElement').contents().find('#video-btn').click()")
     print("Agent CAMERA muted")
+    agent_browser.switch_to.default_content()
     time.sleep(1)
 
 
 def agent_unmute_own_in_call_camera(agent_browser):
     print("Muting the Agent CAMERA")
-    agent_browser.execute_script("$('.iframeElement').contents().find('#video-btn').click()")
+    agent_browser.switch_to_frame(
+        WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
+    WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH,
+                                                                          "//button[contains(@id,'video-btn')]"))).click()
+    #agent_browser.execute_script("$('.iframeElement').contents().find('#video-btn').click()")
     print("Agent CAMERA muted")
+    agent_browser.switch_to.default_content()
     time.sleep(1)
 
 
 def agent_mute_own_in_call_microphone(agent_browser):
     print("Muting the Agent MICROPHONE")
-    agent_browser.execute_script("$('.iframeElement').contents().find('#mic-btn').click()")
+    agent_browser.switch_to_frame(
+        WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
+    WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH,
+                                                                          "//button[contains(@id,'mic-btn')]"))).click()
+    #agent_browser.execute_script("$('.iframeElement').contents().find('#mic-btn').click()")
     print("Agent MICROPHONE muted")
+    agent_browser.switch_to.default_content()
     time.sleep(1)
 
 
 def agent_unmute_own_in_call_microphone(agent_browser):
     print("Muting the Agent MICROPHONE")
-    agent_browser.execute_script("$('.iframeElement').contents().find('#mic-btn').click()")
-    print("Agent MICROPHONE muted")
+    agent_browser.switch_to_frame(
+        WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
+    WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH,
+                                                                          "//button[contains(@id,'mic-btn')]"))).click()
+    #agent_browser.execute_script("$('.iframeElement').contents().find('#mic-btn').click()")
+    print("Agent MICROPHONE unmuted")
+    agent_browser.switch_to.default_content()
     time.sleep(1)
 
 
@@ -294,7 +314,15 @@ def agent_reinvite_call(agent_browser):
     # agent_browser.execute_script("$('.iframeElement').contents().find('#resend-invite-btn').click()")
     # WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, "//div[contains(@id,'LP_CustomWidget') and contains(@style,'display: block')]//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]")))
     # WebDriverWait(visitor_browser, 5).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id, 'resend')]"))).click()
-    agent_browser.execute_script("$('.iframeElement').contents().find('#resend-invite-btn').click()")
+
+    print("Switching to Agent IFRAME")
+    agent_browser.switch_to_frame(WebDriverWait(agent_browser, 10).until(EC.presence_of_element_located((By.XPATH, agent_iframe_xpath))))
+    print("Resending invite")
+    WebDriverWait(agent_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "// button[contains( @ id, 'resend-invite-btn')]"))).click()
+
+
+    #agent_browser.execute_script("$('.iframeElement').contents().find('#resend-invite-btn').click()")
 
     """
     if check_exists_by_xpath(agent_browser, 5, "//button[contains(@id,'resend-invite-btn')]"):
@@ -571,7 +599,7 @@ def agent_select_camera_in_dropdown_by_index(agent_browser, index):
     #WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'cameraSelect')]"))).selectByIndex(index)
     WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'cameraSelect')]"))).click()
     WebDriverWait(agent_browser, timeout).until(EC.presence_of_element_located((By.XPATH, select_option_xpath))).click()
-    print("SELECTED item " + str(index) + " in Camera selector")
+    print("SELECTED item "  + str(index) + " in Camera selector")
     print("Switching to Default Contents")
     agent_browser.switch_to_default_content()
 
@@ -1325,8 +1353,8 @@ while counter == 1:
         agent_browser.get('https://va-a.authentication.liveperson.net/')
         agent_browser.maximize_window()
         # agent_browser.implicitly_wait(30)
-        agent_site_login(agent_browser, 'Agent3', 'Agent123', '54424706')  # VEL-QA
-        # agent_site_login(agent_browser, 'Agent2', 'Agent123', '54424706')  # VEL-QA
+        # agent_site_login(agent_browser, 'Agent3', 'Agent123', '54424706')  # VEL-QA
+        agent_site_login(agent_browser, 'Agent2', 'Agent123', '54424706')  # VEL-QA
         # agent_site_login(agent_browser, 'Bohdan', 'Bohdan123', '57877913') # VEL
 
         """
@@ -1472,7 +1500,6 @@ while counter == 1:
 
         agent_click_settings_button(agent_browser)
         time.sleep(1)
-
         agent_select_camera_in_dropdown_by_index(agent_browser, 1)
         time.sleep(1)
         agent_select_microphone_in_dropdown_by_index(agent_browser, 1)
@@ -1485,6 +1512,10 @@ while counter == 1:
         time.sleep(1)
 
         agent_get_invitation_link(agent_browser)
+
+        guest_browser = webdriver.Chrome(chrome_options=options)
+        guest_browser.get(guest_link)
+        time.sleep(1)
 
         agent_click_menu_button(agent_browser)
 
@@ -1529,9 +1560,6 @@ while counter == 1:
         agent_reinvite_call(agent_browser)
         time.sleep(5)
 
-        guest_browser = webdriver.Chrome(chrome_options=options)
-        guest_browser.get(guest_link)
-        time.sleep(1)
         guest_join_call(guest_browser)
         guest_click_settings_button(guest_browser)
         guest_select_camera_in_dropdown_by_index(guest_browser, 1)
@@ -1539,6 +1567,7 @@ while counter == 1:
         guest_select_speaker_in_dropdown_by_index(guest_browser, 1)
         guest_click_done_in_settings(guest_browser)
         guest_end_call(guest_browser)
+
 
         print("Agent: ENDING THE CALL...")
         agent_end_call(agent_browser)
@@ -1553,8 +1582,8 @@ while counter == 1:
     except TimeoutException as ex:
         print("TimeOut exception in MAIN FLOW: " + str(ex))
         pass
-    except Exception as ex:
-        print("Unknown exception: " + str(ex))
+    except:
+        print("Unknown exception")
         pass
     finally:
         # time.sleep(10)
@@ -1562,7 +1591,10 @@ while counter == 1:
         # print(agent_browser)
         visitor_browser.quit()
         # print(visitor_browser)
-        guest_browser.quit()
+        try:
+            guest_browser.quit()
+        except:
+            print("Guest Browser has no instance and cannot be closed")
         # time.sleep(10)
         print("Run " + str(counter) + " finished")
         counter = counter + 1
