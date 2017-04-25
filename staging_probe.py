@@ -123,7 +123,7 @@ def agent_send_invite_message(agent_browser):
         print("SEND MESSAGE button NOT FOUND")
 
 
-
+"""
 def agent_invite_visitor(agent_browser):
     print("Verifying that the Agent IFRAME exists...")
     if check_exists_by_xpath(agent_browser, 2, "//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]"):
@@ -169,6 +169,52 @@ def agent_invite_visitor(agent_browser):
         raise NoSuchElementException
 
     # Unable to establish connection. Please check your network. [CRLF] Refresh this widget to attempt to continue.
+"""
+
+def agent_invite_visitor(agent_browser):
+    print("Verifying that the Agent IFRAME exists...")
+    if check_exists_by_xpath(agent_browser, 2, agent_iframe_xpath):
+        print("Agent IFRAME FOUND")
+        print("Switching the Agent to IFRAME...")
+        WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+        print("Searching for 'Connecting to visitor' string")
+        if check_exists_by_xpath(agent_browser, 2, "//div[@id='pre-call']//h1[contains(text(),'Connecting')]"):
+            print("'Connecting to visitor' FOUND")
+        else:
+            print("'Connecting to visitor' NOT FOUND")
+        agent_browser.switch_to.default_content()
+        WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH,
+                                                                              "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
+
+        print("Searching for 'Detecting video capability' string")
+        WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+        if check_exists_by_xpath(agent_browser, 2, "//div[@id='pre-call']//h1[contains(text(),'Detecting')]"):
+            print("'Detecting video capability' FOUND")
+        else:
+            print("'Detecting video capability' NOT FOUND")
+        agent_browser.switch_to.default_content()
+        WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH,
+                                                                              "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
+
+        print("Searching for 'Click invite to initialize a video call' string")
+        WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+        if check_exists_by_xpath(agent_browser, 2,
+                                 "//div[@id='pre-call']//h1[contains(text(),'Click invite to initialize a video call')]"):
+            print("'Click invite to initialize a video call' FOUND")
+        else:
+            print("'Click invite to initialize a video call' NOT FOUND")
+        agent_browser.switch_to.default_content()
+        WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH,
+                                                                              "//div[contains(@id,'LP_MainWidgetsManagerViewController')]//div[contains(@class,'custom_widget_icon')]"))).click()
+
+        # agent_browser.execute_script("$('.iframeElement').contents().find('#invite-btn').click()")
+        WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
+        WebDriverWait(agent_browser, 2).until(EC.presence_of_element_located((By.XPATH,
+                                                                              "//*[contains(@id,'invite-btn')]"))).click()
+        agent_browser.switch_to.default_content()
+    else:
+        print("Agent IFRAME NOT FOUND")
+        raise NoSuchElementException
 
 
 
@@ -511,6 +557,14 @@ agent_login = "Probe"
 agent_password = "Probe123"
 
 visitor_site = "https://amitsarm85.github.io/"
+
+timeout = 30
+default_timeout = 10
+small_timeout = 2
+counter = 1
+
+agent_iframe_xpath = "//div[contains(@class,'lpview_widget right_pane_widget_wrapper_iframe') and contains(@style,'display: block')]//iframe[contains(@class,'lpview_table_items_placeholder table_items_placeholder lpview_iframe_tag iframeElement')]"
+visitor_iframe_xpath = "//iframe[contains(@id,'LPFRM')]"
 
 while counter == 1:
     print("Run " + str(counter) + " started")

@@ -118,12 +118,13 @@ def agent_cancel_vidyo_invitation(agent_browser):
 
 def agent_send_invite_message(agent_browser):
     print("Searching the SEND MESSAGE button")
-    if check_exists_by_xpath(agent_browser, 10, "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"):
+    if check_exists_by_xpath(agent_browser, 10, "//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"):
         print("SEND MESSAGE button FOUND")
         print("Trying to click the SEND MESSAGE button...")
         try:
-            WebDriverWait(agent_browser, 5).until(EC.element_to_be_clickable((By.XPATH,
-                                                                              "//div[contains(@id, 'LP_RichTextChatInputViewController')]//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"))).click()
+            WebDriverWait(agent_browser, timeout).until(EC.element_to_be_clickable(
+                (By.XPATH,
+                 "//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"))).click()
         except:
             print("Exception: Agent SEND MESSAGE button NOT FOUND")
             print("Trying click Agent SEND MESSAGE button for one more time, by PRESENSE of the ELEMENT....")
@@ -154,7 +155,7 @@ def agent_invite_visitor(agent_browser):
 
         print("Searching for 'Detecting video capability' string")
         WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
-        if check_exists_by_xpath(agent_browser, 2, "//div[@id='pre-call']//h1[contains(text(),'Detecting')]"):
+        if check_exists_by_xpath(agent_browser, 1, "//div[@id='pre-call']//h1[contains(text(),'Detecting')]"):
             print("'Detecting video capability' FOUND")
         else:
             print("'Detecting video capability' NOT FOUND")
@@ -164,7 +165,7 @@ def agent_invite_visitor(agent_browser):
 
         print("Searching for 'Click invite to initialize a video call' string")
         WebDriverWait(agent_browser, 2).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
-        if check_exists_by_xpath(agent_browser, 2,
+        if check_exists_by_xpath(agent_browser, 1,
                                  "//div[@id='pre-call']//h1[contains(text(),'Click invite to initialize a video call')]"):
             print("'Click invite to initialize a video call' FOUND")
         else:
@@ -680,10 +681,34 @@ def agent_download_diagnostic_reports_from_postcall_settings(agent_browser):
 
 
 def visitor_open_chat(visitor_browser):
+
     WebDriverWait(visitor_browser, timeout).until(
         EC.presence_of_element_located((By.XPATH, "//img[contains(@class,'LPMimage')]"))).click()
     WebDriverWait(visitor_browser, timeout).until(
         EC.presence_of_element_located((By.XPATH, "//span[contains(@class,'lp_top-text')]")))
+    if check_exists_by_xpath(visitor_browser,"5","//div[contains(@id,'lab') and contains(text(),'From')]"):
+        visitor_browser.refresh()
+        WebDriverWait(visitor_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//img[contains(@class,'LPMimage')]"))).click()
+        WebDriverWait(visitor_browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, "//span[contains(@class,'lp_top-text')]")))
+
+def visitor_open_slider(visitor_browser):
+    print("Visitor: searching for the invitation notification...")
+    visitor_chat_vidyo_invitation_indicator = WebDriverWait(visitor_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//span[contains(@class,'lp_notification_text')]")))
+    # Visitor opens the widget after an invite
+    print("Visitor: opening the slider...")
+    WebDriverWait(visitor_browser, timeout).until(
+        EC.presence_of_element_located((By.XPATH, "//button[contains(@class,'lp_slider')]"))).click()
+
+
+def visitor_press_join_button(visitor_browser):
+    visitor_browser.switch_to.frame(WebDriverWait(visitor_browser, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
+    WebDriverWait(visitor_browser, timeout).until(
+        EC.element_to_be_clickable((By.XPATH, "//button[contains(@id,'join-button')]"))).click()
+    visitor_browser.switch_to.default_content()
 
 
 def visitor_mute_own_in_call_microphone(visitor_browser):
@@ -1256,8 +1281,9 @@ def agent_get_invitation_link(agent_browser):
     guest_link_input = "guestLinkInput"
     close_link_button = "//button[contains(@class,'btn btn-link close')]"
 
-    print("Switching to Agents DEFAULT CONTENT")
-    agent_browser.switch_to_default_content()
+    #print("Switching to Agents DEFAULT CONTENT")
+    #agent_browser.switch_to_default_content()
+    agent_click_menu_button(agent_browser)
     print("Switching to Agent IFRAME")
     WebDriverWait(agent_browser, default_timeout).until(
         EC.frame_to_be_available_and_switch_to_it((By.XPATH, agent_iframe_xpath)))
@@ -1291,6 +1317,8 @@ def agent_get_invitation_link(agent_browser):
 
     print("Switching back to Agents DEFAULT CONTENT")
     agent_browser.switch_to_default_content()
+    # Closing the menu on the Agent side
+    agent_click_menu_button(agent_browser)
 
 
 # Page Object ==========================================================================================================
@@ -1430,16 +1458,13 @@ while counter == 1:
 
 
         # Sending the invitation message on the Agent side
-        WebDriverWait(agent_browser, timeout).until(EC.element_to_be_clickable(
-            (By.XPATH, "//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"))).click()
+        #WebDriverWait(agent_browser, timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'lpview_send_msg_button chat_input_button visible active')]"))).click()
+        agent_send_invite_message(agent_browser)
 
         # Waiting for the invitation indicator on the Visitor side
-        visitor_chat_vidyo_invitation_indicator = WebDriverWait(visitor_browser, timeout).until(
-            EC.presence_of_element_located((By.XPATH, "//span[contains(@class,'lp_notification_text')]")))
 
-        # Visitor opens the widget after an invite
-        WebDriverWait(visitor_browser, timeout).until(
-            EC.presence_of_element_located((By.XPATH, "//button[contains(@class,'lp_slider')]"))).click()
+        visitor_open_slider(visitor_browser)
+
 
         '''
         agent_invite_button = WebDriverWait(agent_browser, 30).until(EC.presence_of_element_located((By.XPATH, "//button[contains(@id,'invite-btn')]")))
@@ -1449,11 +1474,24 @@ while counter == 1:
         '''
 
         # id LPFRM_eb3f01-4a22-9d2e
-        visitor_browser.switch_to.frame(WebDriverWait(visitor_browser, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//iframe[contains(@id,'LPFRM')]"))))
-        WebDriverWait(visitor_browser, timeout).until(
-            EC.element_to_be_clickable((By.XPATH, "//button[contains(@id,'join-button')]"))).click()
-        visitor_browser.switch_to.default_content()
+        visitor_press_join_button(visitor_browser)
+
+        print("Getting the GUEST invitation link...")
+        agent_get_invitation_link(agent_browser)
+
+        print("Rinning the GUEST browser...")
+        guest_browser = webdriver.Chrome(chrome_options=options)
+        print("Opening the GUEST link page...")
+        guest_browser.get(guest_link)
+        time.sleep(1)
+
+        guest_join_call(guest_browser)
+        guest_click_settings_button(guest_browser)
+        guest_select_camera_in_dropdown_by_index(guest_browser, 1)
+        guest_select_microphone_in_dropdown_by_index(guest_browser, 1)
+        guest_select_speaker_in_dropdown_by_index(guest_browser, 1)
+        guest_click_done_in_settings(guest_browser)
+
         #time.sleep(5)
 
         visitor_mute_own_in_call_microphone(visitor_browser)
@@ -1496,28 +1534,23 @@ while counter == 1:
         #time.sleep(1)
 
         agent_click_menu_button(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
 
         agent_click_settings_button(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
         agent_select_camera_in_dropdown_by_index(agent_browser, 1)
-        time.sleep(1)
+        #time.sleep(1)
         agent_select_microphone_in_dropdown_by_index(agent_browser, 1)
-        time.sleep(1)
+        #time.sleep(1)
         agent_select_speaker_in_dropdown_by_index(agent_browser, 1)
-        time.sleep(1)
+        #time.sleep(1)
         agent_download_diagnostic_reports_from_incall_settings(agent_browser)
-        time.sleep(1)
+        #time.sleep(1)
         agent_click_done_in_settings(agent_browser)
-        time.sleep(1)
-
-        agent_get_invitation_link(agent_browser)
-
-        guest_browser = webdriver.Chrome(chrome_options=options)
-        guest_browser.get(guest_link)
-        time.sleep(1)
-
+        #time.sleep(1)
         agent_click_menu_button(agent_browser)
+
+
 
         """
         # Un-mute the camera on Agent side
@@ -1559,13 +1592,31 @@ while counter == 1:
         print("Agent: RE-INVITING...")
         agent_reinvite_call(agent_browser)
         time.sleep(5)
+        visitor_rejoin_call(visitor_browser)
+        time.sleep(5)
+
+
+        #guest_end_call(guest_browser)
+
+        agent_get_invitation_link(agent_browser)
+
+        print("Rinning the GUEST browser...")
+        #guest_browser = webdriver.Chrome(chrome_options=options)
+        print("Opening the GUEST link page...")
+        guest_browser.get(guest_link)
+        time.sleep(1)
 
         guest_join_call(guest_browser)
+        """
         guest_click_settings_button(guest_browser)
         guest_select_camera_in_dropdown_by_index(guest_browser, 1)
         guest_select_microphone_in_dropdown_by_index(guest_browser, 1)
         guest_select_speaker_in_dropdown_by_index(guest_browser, 1)
         guest_click_done_in_settings(guest_browser)
+        """
+
+        time.sleep(5)
+
         guest_end_call(guest_browser)
 
         print("Agent: ENDING THE CALL...")
