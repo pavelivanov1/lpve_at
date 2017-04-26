@@ -1607,7 +1607,7 @@ while counter == 1:
         time.sleep(1)
 
         guest_join_call(guest_browser)
-        """
+        """ 
         guest_click_settings_button(guest_browser)
         guest_select_camera_in_dropdown_by_index(guest_browser, 1)
         guest_select_microphone_in_dropdown_by_index(guest_browser, 1)
